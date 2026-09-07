@@ -94,7 +94,7 @@ You do **not** need Node.js, npm, or any frontend tooling — the dashboard is p
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/qAcademy.git
+git clone https://github.com/goodtogo01/qacademy.git
 cd qAcademy
 ```
 
@@ -353,8 +353,7 @@ prior permission from the copyright holder. See [`LICENSE`](LICENSE) for the ful
 Test Automation Engineer · Azure Developer & ISTQB Advanced Test Automation Engineer certified
 
 - LinkedIn: `<add your LinkedIn URL here>`
-- GitHub: `<add your GitHub profile URL here>`
+- GitHub: `https://github.com/goodtogo01`
 
 *Built with architectural guidance and pair-programming from Claude (Anthropic) — including the original API design
 and this dashboard.*
-# QAcademy
