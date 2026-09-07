@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qAcademy — Student Information Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="bg-orbs" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+    <div class="bg-grid"></div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ============ LOGIN / REGISTER ============ -->
+  <section id="view-auth" class="view auth-view">
+    <div class="auth-wrap">
+
+      <div class="brand-panel">
+        <div class="brand-mark-lg">qA</div>
+        <h1>qAcademy</h1>
+        <p class="tagline">Student Information Portal</p>
+        <ul class="feature-list">
+          <li><span class="dot dot-1"></span> Manage students, courses &amp; enrollments</li>
+          <li><span class="dot dot-2"></span> Backed live by your H2 database</li>
+          <li><span class="dot dot-3"></span> Secured with role-based JWT access</li>
+        </ul>
+      </div>
+
+      <div class="card auth-card">
+        <!-- LOGIN FORM -->
+        <form id="login-form" class="auth-form">
+          <h2>Welcome back</h2>
+          <p class="muted">Sign in to manage your academy.</p>
+
+          <label class="field">
+            <span>Username</span>
+            <input type="text" id="login-username" autocomplete="username" placeholder="e.g. admin" required>
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input type="password" id="login-password" autocomplete="current-password" placeholder="••••••••" required>
+          </label>
+
+          <p id="login-error" class="form-error" hidden></p>
+
+          <button type="submit" class="btn btn-primary btn-block">
+            <span class="btn-label">Sign In</span>
+            <span class="btn-spinner" hidden></span>
+          </button>
+
+          <div class="demo-hint">
+            <p>Demo accounts <span class="hint-sep">·</span> password <code>Admin123!</code></p>
+            <div class="demo-chips">
+              <button type="button" class="chip" data-demo-user="admin">admin</button>
+              <button type="button" class="chip" data-demo-user="staff">staff</button>
+              <button type="button" class="chip" data-demo-user="student">student</button>
+            </div>
+          </div>
+
+          <button type="button" id="show-register" class="link-btn">New here? Create an account →</button>
+        </form>
+
+        <!-- REGISTER FORM -->
+        <form id="register-form" class="auth-form" hidden>
+          <h2>Create an account</h2>
+          <p class="muted">Registers a new user against the live API.</p>
+
+          <label class="field">
+            <span>Username</span>
+            <input type="text" id="register-username" autocomplete="username" placeholder="Choose a username" required>
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input type="password" id="register-password" autocomplete="new-password" placeholder="At least 8 characters" required>
+          </label>
+          <label class="field">
+            <span>Role</span>
+            <select id="register-role">
+              <option value="Admin">Admin</option>
+              <option value="Staff">Staff</option>
+              <option value="Student" selected>Student</option>
+            </select>
+          </label>
+
+          <p id="register-error" class="form-error" hidden></p>
+          <p id="register-success" class="form-success" hidden></p>
+
+          <button type="submit" class="btn btn-primary btn-block">
+            <span class="btn-label">Create Account</span>
+            <span class="btn-spinner" hidden></span>
+          </button>
+
+          <button type="button" id="show-login" class="link-btn">← Back to sign in</button>
+        </form>
+      </div>
+
+    </div>
+
+    <footer class="site-footer">&copy; <span class="footer-year"></span> Khosruz Zaman. All rights reserved.</footer>
+  </section>
+
+  <!-- ============ APP SHELL ============ -->
+  <div id="view-app" class="app-shell" hidden>
+    <header class="topbar">
+      <div class="topbar-brand">
+        <span class="brand-mark-sm">qA</span>
+        <span class="brand-name">qAcademy</span>
+      </div>
+
+      <nav class="topnav" id="topnav">
+        <a href="#/home" data-route="home"><span class="nav-ic">⌂</span>Home</a>
+        <a href="#/students" data-route="students"><span class="nav-ic">🎓</span>Students</a>
+        <a href="#/courses" data-route="courses"><span class="nav-ic">📚</span>Courses</a>
+        <a href="#/enrollments" data-route="enrollments"><span class="nav-ic">📝</span>Enrollments</a>
+      </nav>
+
+      <div class="topbar-actions">
+        <a href="/h2-console" target="_blank" rel="noopener" class="btn btn-ghost btn-sm" title="Open the raw H2 database console">H2 Console ↗</a>
+        <div class="user-chip">
+          <span class="role-badge" id="role-badge">—</span>
+          <span id="username-display">—</span>
+        </div>
+        <button id="logout-btn" class="btn btn-outline btn-sm">Log out</button>
+      </div>
+    </header>
+
+    <main id="main-content" class="main-content"></main>
+
+    <footer class="site-footer app-footer">&copy; <span class="footer-year"></span> Khosruz Zaman. All rights reserved.</footer>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

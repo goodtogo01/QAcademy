@@ -1,0 +1,814 @@
+<title>qAcademy Automation Architecture</title>
+<style>
+  :root{
+    --bg:#f6f5f2;
+    --surface:#ffffff;
+    --ink:#1c1d1f;
+    --muted:#5b5d63;
+    --line:#c9c7c0;
+    --ui-accent:#2a5fb3;
+    --ui-accent-soft:#e7edf9;
+    --api-accent:#1a7a5e;
+    --api-accent-soft:#e4f3ee;
+    --neutral-box:#eeece6;
+    --report-accent:#9a5a1f;
+    --report-soft:#f7ebdd;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#15161a;
+      --surface:#1e2025;
+      --ink:#eceef1;
+      --muted:#a2a6ae;
+      --line:#3a3d44;
+      --ui-accent:#7fa8e8;
+      --ui-accent-soft:#202b3e;
+      --api-accent:#5fc9a6;
+      --api-accent-soft:#17302a;
+      --neutral-box:#2a2c31;
+      --report-accent:#d9a15f;
+      --report-soft:#332619;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#15161a;
+    --surface:#1e2025;
+    --ink:#eceef1;
+    --muted:#a2a6ae;
+    --line:#3a3d44;
+    --ui-accent:#7fa8e8;
+    --ui-accent-soft:#202b3e;
+    --api-accent:#5fc9a6;
+    --api-accent-soft:#17302a;
+    --neutral-box:#2a2c31;
+    --report-accent:#d9a15f;
+    --report-soft:#332619;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", -apple-system, sans-serif;
+    padding:36px 20px 60px;
+  }
+  .wrap{max-width:1180px;margin:0 auto;}
+  h1{
+    font-size:26px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0 0 6px;
+    text-wrap:balance;
+  }
+  .subtitle{
+    color:var(--muted);
+    font-size:15px;
+    max-width:65ch;
+    margin:0 0 28px;
+    line-height:1.55;
+  }
+  .subtitle code{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:13px;
+    background:var(--neutral-box);
+    padding:1px 5px;
+    border-radius:4px;
+  }
+  figure{margin:0;}
+  .diagram-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px 20px 14px;
+  }
+  svg{width:100%;height:auto;display:block;}
+  figcaption{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid var(--line);
+    line-height:1.5;
+  }
+  .legend{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:14px;
+    margin-top:24px;
+  }
+  .legend-item{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+  }
+  .legend-item .dot{
+    display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;position:relative;top:-1px;
+  }
+  .legend-item h3{
+    font-size:14px;margin:0 0 6px;font-weight:600;
+  }
+  .legend-item p{
+    margin:0;color:var(--muted);font-size:13px;line-height:1.5;
+  }
+  .legend-item code{font-family:"IBM Plex Mono",monospace;font-size:12px;}
+  .dot-ui{background:var(--ui-accent);}
+  .dot-api{background:var(--api-accent);}
+  .dot-shared{background:var(--muted);}
+  .dot-report{background:var(--report-accent);}
+
+  text{font-family:"IBM Plex Sans", sans-serif;}
+  .mono{font-family:"IBM Plex Mono", monospace;}
+
+  /* ---- page nav ---- */
+  .pagenav{
+    display:flex;flex-wrap:wrap;gap:6px 18px;
+    margin:0 0 32px;
+    padding:12px 16px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+  }
+  .pagenav a{
+    color:var(--muted);
+    font-size:12.5px;
+    font-weight:500;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .pagenav a:hover{color:var(--ink);text-decoration:underline;}
+
+  /* ---- content sections ---- */
+  section{margin-top:44px;scroll-margin-top:20px;}
+  section > h2{
+    font-size:19px;
+    font-weight:600;
+    margin:0 0 6px;
+    letter-spacing:-0.005em;
+  }
+  section > .lede{
+    color:var(--muted);
+    font-size:14px;
+    max-width:72ch;
+    line-height:1.6;
+    margin:0 0 18px;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px 20px;
+  }
+  .callout{
+    background:var(--ui-accent-soft);
+    border:1px solid var(--ui-accent);
+    border-radius:12px;
+    padding:16px 20px;
+    font-size:14px;
+    line-height:1.65;
+    margin-bottom:18px;
+  }
+  .callout strong{color:var(--ui-accent);}
+  :root[data-theme="dark"] .callout strong,
+  :root:not([data-theme="light"]) .callout strong{color:var(--ui-accent);}
+
+  pre{
+    background:var(--neutral-box);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    overflow-x:auto;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:12.5px;
+    line-height:1.6;
+    margin:0;
+  }
+  code{font-family:"IBM Plex Mono",monospace;}
+  p code, li code, td code, th code{
+    background:var(--neutral-box);
+    padding:1px 5px;
+    border-radius:4px;
+    font-size:12.5px;
+  }
+
+  table{border-collapse:collapse;width:100%;font-size:13px;}
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;}
+  th,td{
+    text-align:left;
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+    line-height:1.5;
+  }
+  thead th{
+    background:var(--neutral-box);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+
+  ol.steps{
+    margin:0;padding-left:0;list-style:none;counter-reset:step;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  ol.steps li{
+    counter-increment:step;
+    display:flex;gap:14px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 16px;
+    font-size:13.5px;
+    line-height:1.55;
+  }
+  ol.steps li::before{
+    content:counter(step);
+    flex:0 0 auto;
+    width:24px;height:24px;
+    border-radius:50%;
+    background:var(--api-accent);
+    color:#fff;
+    font-size:12px;
+    font-weight:600;
+    display:flex;align-items:center;justify-content:center;
+  }
+  ol.steps li.future::before{background:var(--report-accent);}
+  ol.steps li.future{opacity:0.85;}
+
+  /* ---- tagged folder tree ---- */
+  .tag-legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+  .tag{
+    display:inline-block;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    padding:2px 7px;
+    border-radius:5px;
+    white-space:nowrap;
+  }
+  .tag-root{background:var(--ink);color:var(--bg);}
+  .tag-package{background:var(--ui-accent-soft);color:var(--ui-accent);border:1px solid var(--ui-accent);}
+  .tag-class{background:var(--api-accent-soft);color:var(--api-accent);border:1px solid var(--api-accent);}
+  .tag-enum{background:var(--report-soft);color:var(--report-accent);border:1px solid var(--report-accent);}
+  .tag-folder{background:var(--neutral-box);color:var(--muted);border:1px solid var(--line);}
+  .tag-file{background:var(--neutral-box);color:var(--muted);border:1px dashed var(--line);}
+  .tag-legend .legend-label{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+
+  ul.tree, ul.tree ul{list-style:none;margin:0;padding-left:20px;}
+  ul.tree{padding-left:0;}
+  ul.tree ul{border-left:1px dashed var(--line);margin:2px 0 2px 6px;padding-left:16px;}
+  ul.tree li{margin:5px 0;}
+  ul.tree .row{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;}
+  ul.tree .name{font-family:"IBM Plex Mono",monospace;font-size:13px;}
+  ul.tree .desc{color:var(--muted);font-size:12px;}
+  .tree-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;overflow-x:auto;}
+  .tree-card h3{font-size:13px;margin:0 0 12px;font-family:"IBM Plex Mono",monospace;color:var(--muted);font-weight:500;}
+  .tree-card + .tree-card{margin-top:18px;}
+
+  footer.page-footer{
+    margin-top:56px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+    color:var(--muted);
+    font-size:12.5px;
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<div class="wrap">
+  <h1>qAcademy Automation Architecture</h1>
+  <p class="subtitle">
+    One TestNG suite, two independent lanes. UI tests drive the real browser through Selenium; API tests
+    call <code>/api/**</code> directly through RestAssured — both exercise the same running
+    <code>qAcademy</code> Spring Boot app and the same H2 file database, and both report through one shared
+    ExtentReports instance.
+  </p>
+
+  <nav class="pagenav">
+    <a href="#diagram">Diagram</a>
+    <a href="#decision">src/main vs src/test</a>
+    <a href="#maven">Maven changes</a>
+    <a href="#structure">Folder structure</a>
+    <a href="#concepts">Java concepts</a>
+    <a href="#steps">Build order</a>
+    <a href="#open">Open questions</a>
+  </nav>
+
+  <a id="diagram"></a>
+
+  <figure class="diagram-card">
+    <svg viewBox="0 0 1160 660" role="img" aria-label="Diagram showing the qAcademy automation framework: a TestNG test execution layer splitting into a UI automation lane (Page Objects, DriverFactory, Selenium) and an API automation lane (Service Clients, RequestSpecFactory, RestAssured), both using a shared support layer for config, utilities, logging and reporting, both driving the live qAcademy application (dashboard and REST API) which share one H2 database, with results written to one ExtentReports HTML output.">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+      </defs>
+
+      <!-- ================= connectors (drawn first, under boxes) ================= -->
+      <g fill="none" stroke="currentColor" stroke-width="1.6" opacity="0.85">
+        <!-- banner -> UI / API lanes -->
+        <line x1="200" y1="90" x2="200" y2="138" marker-end="url(#arrow)"/>
+        <line x1="960" y1="90" x2="960" y2="138" marker-end="url(#arrow)"/>
+
+        <!-- UI lane -> Dashboard ; API lane -> REST API -->
+        <line x1="200" y1="210" x2="200" y2="358" marker-end="url(#arrow)"/>
+        <line x1="960" y1="210" x2="960" y2="358" marker-end="url(#arrow)"/>
+
+        <!-- Dashboard -> REST API (same-origin fetch) -->
+        <line x1="340" y1="390" x2="818" y2="390" marker-end="url(#arrow)"/>
+
+        <!-- REST API -> DB -->
+        <line x1="920" y1="420" x2="640" y2="468" marker-end="url(#arrow)"/>
+      </g>
+
+      <!-- dashed "uses shared support" -->
+      <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 4" opacity="0.65">
+        <line x1="340" y1="185" x2="430" y2="255" marker-end="url(#arrow)"/>
+        <line x1="820" y1="185" x2="730" y2="255" marker-end="url(#arrow)"/>
+        <!-- support -> report, routed left around the DB box -->
+        <polyline points="500,310 500,440 360,440 360,610 430,610" marker-end="url(#arrow)"/>
+      </g>
+
+      <!-- ================= arrow labels ================= -->
+      <g font-size="11.5" fill="currentColor" opacity="0.8">
+        <text x="210" y="118" text-anchor="start">executes</text>
+        <text x="970" y="118" text-anchor="start">executes</text>
+        <text x="210" y="285" text-anchor="start">Selenium controls</text>
+        <text x="970" y="285" text-anchor="start">RestAssured calls</text>
+        <text x="579" y="384" text-anchor="middle">same-origin fetch()</text>
+        <text x="850" y="440" text-anchor="middle">JPA / Hibernate</text>
+        <text x="410" y="215" text-anchor="end">uses</text>
+        <text x="750" y="215" text-anchor="start">uses</text>
+        <text x="330" y="600" text-anchor="middle">writes report</text>
+      </g>
+
+      <!-- ================= Row 1: Test Execution banner ================= -->
+      <g>
+        <rect x="60" y="30" width="1040" height="60" rx="10" fill="var(--neutral-box)" stroke="var(--line)"/>
+        <text x="580" y="55" text-anchor="middle" font-weight="600" font-size="14">TestNG Test Execution Layer</text>
+        <text x="580" y="75" text-anchor="middle" font-size="11.5" opacity="0.75" class="mono">src/test/java/com/qacademy/automation/tests — ui · api · e2e</text>
+      </g>
+
+      <!-- ================= Row 2: UI / API automation lanes ================= -->
+      <g>
+        <rect x="60" y="140" width="280" height="70" rx="10" fill="var(--ui-accent-soft)" stroke="var(--ui-accent)"/>
+        <text x="200" y="163" text-anchor="middle" font-weight="600" font-size="13.5" fill="var(--ui-accent)">UI Automation Lane</text>
+        <text x="200" y="181" text-anchor="middle" font-size="11.5" opacity="0.85">Page Objects + DriverFactory</text>
+        <text x="200" y="196" text-anchor="middle" font-size="10.5" opacity="0.65" class="mono">ThreadLocal&lt;WebDriver&gt; · Selenium</text>
+      </g>
+      <g>
+        <rect x="820" y="140" width="280" height="70" rx="10" fill="var(--api-accent-soft)" stroke="var(--api-accent)"/>
+        <text x="960" y="163" text-anchor="middle" font-weight="600" font-size="13.5" fill="var(--api-accent)">API Automation Lane</text>
+        <text x="960" y="181" text-anchor="middle" font-size="11.5" opacity="0.85">Service Clients + RequestSpecFactory</text>
+        <text x="960" y="196" text-anchor="middle" font-size="10.5" opacity="0.65" class="mono">RestAssured</text>
+      </g>
+
+      <!-- ================= Row 3: Shared Support Layer (centered) ================= -->
+      <g>
+        <rect x="430" y="250" width="300" height="60" rx="10" fill="var(--neutral-box)" stroke="var(--line)"/>
+        <text x="580" y="273" text-anchor="middle" font-weight="600" font-size="12.5">Shared Support Layer</text>
+        <text x="580" y="291" text-anchor="middle" font-size="10.5" opacity="0.7" class="mono">ConfigManager · Utils · Logger · TestListener</text>
+      </g>
+
+      <!-- ================= Row 4: Application Under Test ================= -->
+      <g>
+        <rect x="60" y="358" width="280" height="62" rx="10" fill="var(--surface)" stroke="var(--ui-accent)"/>
+        <text x="200" y="382" text-anchor="middle" font-weight="600" font-size="13">qAcademy Dashboard</text>
+        <text x="200" y="399" text-anchor="middle" font-size="10.5" opacity="0.65" class="mono">browser · http://localhost:8085</text>
+      </g>
+      <g>
+        <rect x="820" y="358" width="280" height="62" rx="10" fill="var(--surface)" stroke="var(--api-accent)"/>
+        <text x="960" y="382" text-anchor="middle" font-weight="600" font-size="13">qAcademy REST API</text>
+        <text x="960" y="399" text-anchor="middle" font-size="10.5" opacity="0.65" class="mono">/api/auth · /student · /course · /enrollment</text>
+      </g>
+
+      <!-- ================= Row 5: Database ================= -->
+      <g>
+        <rect x="430" y="468" width="300" height="60" rx="10" fill="var(--surface)" stroke="var(--line)"/>
+        <text x="580" y="492" text-anchor="middle" font-weight="600" font-size="13">H2 Database</text>
+        <text x="580" y="509" text-anchor="middle" font-size="10.5" opacity="0.65" class="mono">file-mode · ./data/qacademy.mv.db</text>
+      </g>
+
+      <!-- ================= Row 6: Reporting output ================= -->
+      <g>
+        <rect x="430" y="580" width="300" height="60" rx="10" fill="var(--report-soft)" stroke="var(--report-accent)"/>
+        <text x="580" y="604" text-anchor="middle" font-weight="600" font-size="13" fill="var(--report-accent)">ExtentReports HTML</text>
+        <text x="580" y="621" text-anchor="middle" font-size="10.5" opacity="0.75" class="mono">target/extent-reports/index.html</text>
+      </g>
+    </svg>
+    <figcaption>
+      The UI lane never talks to the API directly — it drives the browser, and the browser's own dashboard
+      JavaScript calls the API (same-origin <code>fetch()</code>), exactly as a real user would. The API
+      lane calls <code>/api/**</code> directly, bypassing the browser entirely. Both paths land in the same
+      H2 database and both suites report through the same shared <code>ExtentReportManager</code> singleton
+      — which is what makes a single run's report tell one consistent story across UI and API coverage.
+    </figcaption>
+  </figure>
+
+  <div class="legend">
+    <div class="legend-item">
+      <h3><span class="dot dot-ui"></span>UI Automation Lane</h3>
+      <p>Page Object Model classes wrapping Selenium. Tests never call <code>WebDriver</code>/<code>By</code> directly — only page methods.</p>
+    </div>
+    <div class="legend-item">
+      <h3><span class="dot dot-api"></span>API Automation Lane</h3>
+      <p>One Service Client class per resource (<code>StudentApiClient</code>, <code>CourseApiClient</code>, …), built on a shared RestAssured request spec.</p>
+    </div>
+    <div class="legend-item">
+      <h3><span class="dot dot-shared"></span>Shared Support Layer</h3>
+      <p>Config, wait helpers, JSON helpers, logging and the TestNG listener that feeds ExtentReports — used identically by both lanes.</p>
+    </div>
+    <div class="legend-item">
+      <h3><span class="dot dot-report"></span>Reporting</h3>
+      <p>One ExtentReports HTML file per run, regardless of whether the run mixed UI, API, or hybrid end-to-end tests.</p>
+    </div>
+  </div>
+
+  <section id="decision">
+    <h2>One decision to settle first: <span class="mono">src/main</span> vs <span class="mono">src/test</span></h2>
+    <p class="lede">
+      You asked to combine the automation framework into the same <code>qAcademy</code> project rather than
+      a separate one — a reasonable call for a solo/portfolio project, and this design honors it. But it
+      changes where the framework code should live compared to what you first described.
+    </p>
+    <div class="callout">
+      You suggested framework classes (Page Objects, API clients, utilities) go under
+      <code>src/main/java</code>, with only <code>@Test</code> classes under <code>src/test/java</code>.
+      That's correct for a <strong>standalone</strong> automation Maven module — but here,
+      <code>src/main/java/com/qacademy/...</code> is already your <strong>production Spring Boot
+      application</strong>, the code compiled into <code>target/qacademy.jar</code>.
+    </div>
+    <div class="card">
+      <p style="margin:0 0 12px;font-size:14px;line-height:1.65;">
+        Selenium, RestAssured, and ExtentReports should be declared <code>test</code>-scoped — exactly like
+        the <code>testng</code> and <code>mockito-core</code> dependencies already in your <code>pom.xml</code>.
+        A <code>test</code>-scoped dependency only exists on the <em>test</em> classpath. A Page Object under
+        <code>src/main/java</code> importing <code>org.openqa.selenium.*</code> simply wouldn't compile
+        unless Selenium were promoted to <code>compile</code> scope — which would then ship Selenium,
+        RestAssured, and ExtentReports <strong>inside your production application jar</strong>. That bloats
+        the deployable, mixes test tooling into production dependencies, and risks version conflicts with
+        the app's own dependencies.
+      </p>
+      <p style="margin:0;font-size:14px;line-height:1.65;">
+        <strong>Resolution:</strong> everything automation-related — framework classes and test classes
+        alike — lives under <code>src/test/java</code> (and <code>src/test/resources</code>), in its own
+        package namespace (<code>com.qacademy.automation</code>) so it's structurally distinct from
+        <code>com.qacademy.core</code> / <code>.infrastructure</code> / <code>.api</code> even though it's
+        the same Maven module. This is exactly how Spring Boot's own <code>@SpringBootTest</code>
+        integration tests are organized — one repo, one <code>pom.xml</code>, one <code>mvn clean
+        install</code>, with the production artifact staying completely clean.
+      </p>
+    </div>
+  </section>
+
+  <section id="maven">
+    <h2>Maven changes needed</h2>
+    <p class="lede">
+      Add these to the existing <code>&lt;dependencies&gt;</code> block — all <code>test</code> scope,
+      consistent with your existing <code>testng</code>/<code>mockito-core</code> entries.
+    </p>
+    <pre><code>&lt;!-- UI automation --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.seleniumhq.selenium&lt;/groupId&gt;
+    &lt;artifactId&gt;selenium-java&lt;/artifactId&gt;
+    &lt;version&gt;4.27.0&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+
+&lt;!-- API automation --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.rest-assured&lt;/groupId&gt;
+    &lt;artifactId&gt;rest-assured&lt;/artifactId&gt;
+    &lt;version&gt;5.5.0&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+
+&lt;!-- Reporting --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.aventstack&lt;/groupId&gt;
+    &lt;artifactId&gt;extentreports&lt;/artifactId&gt;
+    &lt;version&gt;5.1.2&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+    <p style="font-size:13.5px;color:var(--muted);line-height:1.65;margin-top:14px;">
+      No WebDriverManager needed — Selenium 4.6+ ships Selenium Manager, which resolves the right
+      ChromeDriver/GeckoDriver automatically. No extra JSON library needed either — Jackson already arrives
+      transitively via <code>spring-boot-starter-web</code>, and your API models will read almost
+      identically to the app's own DTOs (<code>StudentDto</code>, <code>CourseDto</code>, …) on purpose, so
+      the mapping is obvious at a glance. TestNG (<code>7.12.0</code>) is already present and auto-detected
+      by Surefire — a <code>&lt;suiteXmlFiles&gt;</code> block becomes worth adding once the
+      <code>testng-*.xml</code> suites below exist.
+    </p>
+  </section>
+
+  <section id="structure">
+    <h2>Folder &amp; package structure</h2>
+    <p class="lede">
+      Root package for all automation code: <code>com.qacademy.automation</code>, under
+      <code>src/test/java</code>. Every entry below is tagged with exactly what it is —
+      package, class, enum, folder, or plain file — so there's no ambiguity when you start
+      creating these on disk.
+    </p>
+
+    <div class="tag-legend">
+      <span class="legend-label"><span class="tag tag-root">Root package</span> the top-level package declaration</span>
+      <span class="legend-label"><span class="tag tag-package">Package</span> a Java package (a directory with a package-info meaning)</span>
+      <span class="legend-label"><span class="tag tag-class">Class</span> a <code>.java</code> class (or interface)</span>
+      <span class="legend-label"><span class="tag tag-enum">Enum</span> a <code>.java</code> enum type</span>
+      <span class="legend-label"><span class="tag tag-folder">Folder</span> a plain directory, not a Java package</span>
+      <span class="legend-label"><span class="tag tag-file">File</span> a non-Java config/resource file</span>
+    </div>
+
+    <div class="tree-card">
+      <h3>src/test/java/ — Java automation source</h3>
+      <ul class="tree">
+        <li><div class="row"><span class="tag tag-root">Root Pkg</span><span class="name">com.qacademy.automation</span></div>
+          <ul>
+            <li><div class="row"><span class="tag tag-package">Package</span><span class="name">config</span></div>
+              <ul>
+                <li><div class="row"><span class="tag tag-class">Class</span><span class="name">ConfigManager.java</span><span class="desc">Singleton; loads config.properties (base URL, browser, env)</span></div></li>
+                <li><div class="row"><span class="tag tag-enum">Enum</span><span class="name">Environment.java</span><span class="desc">LOCAL, CI</span></div></li>
+              </ul>
+            </li>
+            <li><div class="row"><span class="tag tag-package">Package</span><span class="name">core</span></div>
+              <ul>
+                <li><div class="row"><span class="tag tag-package">Package</span><span class="name">driver</span></div>
+                  <ul>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">DriverFactory.java</span><span class="desc">Factory Method: creates a WebDriver per BrowserType</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">DriverManager.java</span><span class="desc">holds ThreadLocal&lt;WebDriver&gt; — parallel-safe</span></div></li>
+                  </ul>
+                </li>
+                <li><div class="row"><span class="tag tag-package">Package</span><span class="name">api</span></div>
+                  <ul>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">RequestSpecFactory.java</span><span class="desc">builds the shared RestAssured RequestSpecification</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">BaseApiClient.java</span><span class="desc">common given()/when() plumbing every client extends</span></div></li>
+                  </ul>
+                </li>
+                <li><div class="row"><span class="tag tag-package">Package</span><span class="name">base</span></div>
+                  <ul>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">BaseTest.java</span><span class="desc">shared @BeforeSuite/@AfterSuite (e.g. ExtentReports init)</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">BaseUiTest.java</span><span class="desc">extends BaseTest; driver lifecycle per UI test</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">BaseApiTest.java</span><span class="desc">extends BaseTest; base request spec per API test</span></div></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li><div class="row"><span class="tag tag-package">Package</span><span class="name">ui</span></div>
+              <ul>
+                <li><div class="row"><span class="tag tag-package">Package</span><span class="name">pages</span></div>
+                  <ul>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">BasePage.java</span><span class="desc">common waits + driver reference every page extends</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">LoginPage.java</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">HomePage.java</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">StudentsPage.java</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">CoursesPage.java</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">EnrollmentsPage.java</span></div></li>
+                  </ul>
+                </li>
+                <li><div class="row"><span class="tag tag-package">Package</span><span class="name">components</span></div>
+                  <ul>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">NavBarComponent.java</span><span class="desc">the top nav bar reused by every page after login</span></div></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li><div class="row"><span class="tag tag-package">Package</span><span class="name">api</span></div>
+              <ul>
+                <li><div class="row"><span class="tag tag-package">Package</span><span class="name">clients</span></div>
+                  <ul>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">AuthApiClient.java</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">StudentApiClient.java</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">CourseApiClient.java</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">EnrollmentApiClient.java</span></div></li>
+                  </ul>
+                </li>
+                <li><div class="row"><span class="tag tag-package">Package</span><span class="name">models</span></div>
+                  <ul>
+                    <li><div class="row"><span class="tag tag-package">Package</span><span class="name">request</span></div>
+                      <ul>
+                        <li><div class="row"><span class="tag tag-class">Class</span><span class="name">LoginRequest.java</span></div></li>
+                        <li><div class="row"><span class="tag tag-class">Class</span><span class="name">RegisterRequest.java</span></div></li>
+                        <li><div class="row"><span class="tag tag-class">Class</span><span class="name">StudentCreateRequest.java</span></div></li>
+                        <li><div class="row"><span class="tag tag-class">Class</span><span class="name">CourseCreateRequest.java</span></div></li>
+                        <li><div class="row"><span class="tag tag-class">Class</span><span class="name">EnrollmentCreateRequest.java</span></div></li>
+                        <li><div class="row"><span class="tag tag-class">Class</span><span class="name">EnrollmentUpdateRequest.java</span></div></li>
+                      </ul>
+                    </li>
+                    <li><div class="row"><span class="tag tag-package">Package</span><span class="name">response</span></div>
+                      <ul>
+                        <li><div class="row"><span class="tag tag-class">Class</span><span class="name">LoginResponse.java</span></div></li>
+                        <li><div class="row"><span class="tag tag-class">Class</span><span class="name">StudentResponse.java</span></div></li>
+                        <li><div class="row"><span class="tag tag-class">Class</span><span class="name">CourseResponse.java</span></div></li>
+                        <li><div class="row"><span class="tag tag-class">Class</span><span class="name">EnrollmentResponse.java</span></div></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li><div class="row"><span class="tag tag-package">Package</span><span class="name">data</span></div>
+              <ul>
+                <li><div class="row"><span class="tag tag-class">Class</span><span class="name">TestDataFactory.java</span><span class="desc">builds valid/invalid payloads for both lanes</span></div></li>
+                <li><div class="row"><span class="tag tag-enum">Enum</span><span class="name">UserRole.java</span><span class="desc">ADMIN/STAFF/STUDENT, carries seeded credentials</span></div></li>
+              </ul>
+            </li>
+            <li><div class="row"><span class="tag tag-package">Package</span><span class="name">utils</span></div>
+              <ul>
+                <li><div class="row"><span class="tag tag-class">Class</span><span class="name">WaitUtils.java</span><span class="desc">explicit-wait helpers (Selenium)</span></div></li>
+                <li><div class="row"><span class="tag tag-class">Class</span><span class="name">JsonUtils.java</span><span class="desc">serialize/deserialize helpers (API)</span></div></li>
+                <li><div class="row"><span class="tag tag-class">Class</span><span class="name">ScreenshotUtils.java</span><span class="desc">capture on failure (UI)</span></div></li>
+                <li><div class="row"><span class="tag tag-class">Class</span><span class="name">LoggerUtil.java</span><span class="desc">thin wrapper over SLF4J</span></div></li>
+                <li><div class="row"><span class="tag tag-class">Class</span><span class="name">ExtentReportManager.java</span><span class="desc">Singleton holding the one ExtentReports instance</span></div></li>
+              </ul>
+            </li>
+            <li><div class="row"><span class="tag tag-package">Package</span><span class="name">listeners</span></div>
+              <ul>
+                <li><div class="row"><span class="tag tag-class">Class</span><span class="name">TestListener.java</span><span class="desc">implements ITestListener — logs to ExtentReports, screenshots on fail</span></div></li>
+                <li><div class="row"><span class="tag tag-class">Class</span><span class="name">RetryAnalyzer.java</span><span class="desc">optional: retries a flaky test once before failing it</span></div></li>
+              </ul>
+            </li>
+            <li><div class="row"><span class="tag tag-package">Package</span><span class="name">tests</span></div>
+              <ul>
+                <li><div class="row"><span class="tag tag-package">Package</span><span class="name">ui</span></div>
+                  <ul>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">LoginPageTest.java</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">StudentsPageTest.java</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">CoursesPageTest.java</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">EnrollmentsPageTest.java</span></div></li>
+                  </ul>
+                </li>
+                <li><div class="row"><span class="tag tag-package">Package</span><span class="name">api</span></div>
+                  <ul>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">AuthApiTest.java</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">StudentApiTest.java</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">CourseApiTest.java</span></div></li>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">EnrollmentApiTest.java</span></div></li>
+                  </ul>
+                </li>
+                <li><div class="row"><span class="tag tag-package">Package</span><span class="name">e2e</span></div>
+                  <ul>
+                    <li><div class="row"><span class="tag tag-class">Class</span><span class="name">CrossLayerFlowTest.java</span><span class="desc">the E2E-01..E2E-05 hybrid scenarios (Functional Analysis §5)</span></div></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tree-card">
+      <h3>src/test/resources/ — non-Java resources</h3>
+      <ul class="tree">
+        <li><div class="row"><span class="tag tag-folder">Folder</span><span class="name">src/test/resources</span></div>
+          <ul>
+            <li><div class="row"><span class="tag tag-file">File</span><span class="name">config.properties</span><span class="desc">base.url, browser, implicit/explicit wait timeouts, env</span></div></li>
+            <li><div class="row"><span class="tag tag-folder">Folder</span><span class="name">testng</span></div>
+              <ul>
+                <li><div class="row"><span class="tag tag-file">File</span><span class="name">testng-smoke.xml</span></div></li>
+                <li><div class="row"><span class="tag tag-file">File</span><span class="name">testng-ui.xml</span></div></li>
+                <li><div class="row"><span class="tag tag-file">File</span><span class="name">testng-api.xml</span></div></li>
+                <li><div class="row"><span class="tag tag-file">File</span><span class="name">testng-e2e.xml</span></div></li>
+                <li><div class="row"><span class="tag tag-file">File</span><span class="name">testng-regression.xml</span><span class="desc">the other four, combined</span></div></li>
+              </ul>
+            </li>
+            <li><div class="row"><span class="tag tag-file">File</span><span class="name">extent-config.xml</span><span class="desc">ExtentSparkReporter theme/title config</span></div></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <p style="font-size:13.5px;color:var(--muted);line-height:1.65;margin-top:14px;">
+      <code>target/extent-reports/</code> (or <code>test-output/extent-reports/</code>) is where reports
+      land at runtime — add it to <code>.gitignore</code> alongside <code>target/</code>, since it's
+      generated output, not source.
+    </p>
+  </section>
+
+  <section id="concepts">
+    <h2>Java concepts this framework deliberately leans on</h2>
+    <p class="lede">
+      What, and — more importantly — why, so each choice is something you can explain, not just use.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Concept</th><th>Where it shows up</th><th>Why it's the right tool here</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Page Object Model</strong></td>
+            <td><code>ui/pages/*</code></td>
+            <td>Encapsulation applied to UI testing: locators and low-level Selenium calls live in one place per screen; tests only call intention-revealing methods, so a UI change means editing one class, not every test that touches that screen.</td>
+          </tr>
+          <tr>
+            <td><strong>Inheritance</strong></td>
+            <td><code>BaseTest</code> → <code>BaseUiTest</code>/<code>BaseApiTest</code>; <code>BasePage</code> → concrete pages</td>
+            <td>Shared setup/teardown and helpers live once at the top of the hierarchy instead of copy-pasted into every class.</td>
+          </tr>
+          <tr>
+            <td><strong>Factory Method</strong></td>
+            <td><code>DriverFactory.createDriver(BrowserType)</code></td>
+            <td>Test code asks for "a Chrome driver" without knowing how it's constructed — swapping in Firefox later is a one-line change, not a find-and-replace.</td>
+          </tr>
+          <tr>
+            <td><strong>Singleton</strong></td>
+            <td><code>ExtentReportManager</code>, <code>ConfigManager</code></td>
+            <td>Exactly one <code>ExtentReports</code> instance must exist per run — it's the one HTML file being written to — and exactly one loaded copy of <code>config.properties</code>.</td>
+          </tr>
+          <tr>
+            <td><strong><code>ThreadLocal&lt;WebDriver&gt;</code></strong></td>
+            <td><code>DriverManager</code></td>
+            <td>The single concept that makes parallel UI execution safe. A plain <code>static WebDriver</code> field would let two threads silently drive the same browser session; <code>ThreadLocal</code> gives each thread its own instance.</td>
+          </tr>
+          <tr>
+            <td><strong>Builder pattern</strong></td>
+            <td>RestAssured's <code>given()...when()...</code>; your own <code>TestDataFactory</code></td>
+            <td>Reads as a sentence — and matching the main app's "no Lombok, nothing hidden" philosophy, your builders are hand-written, so every line is explainable.</td>
+          </tr>
+          <tr>
+            <td><strong>Fluent interfaces</strong></td>
+            <td>Page Objects returning the next page (e.g. <code>loginPage.loginAs(ADMIN)</code> returns a <code>HomePage</code>)</td>
+            <td>A test reads like a story, and the compiler catches a broken navigation assumption immediately via the return type.</td>
+          </tr>
+          <tr>
+            <td><strong>Enums</strong></td>
+            <td><code>UserRole</code>, <code>Environment</code>, <code>BrowserType</code></td>
+            <td>Type-safe constants instead of raw strings — <code>UserRole.ADMIN</code> can't be typo'd, and each constant can carry its own data.</td>
+          </tr>
+          <tr>
+            <td><strong>Interfaces</strong></td>
+            <td>An <code>ApiClient</code> contract; optionally a <code>Page</code> interface</td>
+            <td>Lets shared code depend on a contract, not a concrete class — useful the moment a second implementation shows up (e.g. a mock client for offline dev).</td>
+          </tr>
+          <tr>
+            <td><strong>Custom exceptions</strong></td>
+            <td><code>FrameworkException</code></td>
+            <td>Turns a raw <code>NoSuchElementException</code> into a message that says what business action failed — exactly what shows up in the ExtentReports failure log.</td>
+          </tr>
+          <tr>
+            <td><strong><code>ITestListener</code></strong></td>
+            <td><code>TestListener</code></td>
+            <td>TestNG discovers listeners declared in <code>testng.xml</code> via reflection and calls them at lifecycle points — the wiring between "a test failed" and "log it, screenshot it, write it to ExtentReports," with none of that logic inside the test classes.</td>
+          </tr>
+          <tr>
+            <td><strong>Deterministic cleanup</strong></td>
+            <td><code>@AfterMethod</code> in <code>BaseUiTest</code></td>
+            <td>A browser session must close even when the test above it threw — cleanup runs whether the test passed or failed.</td>
+          </tr>
+          <tr>
+            <td><strong>Streams / lambdas</strong></td>
+            <td><code>tests/e2e/*</code></td>
+            <td>Where "combine UI and API" becomes real code: comparing a list scraped from the UI table against <code>apiClient.getStudents().stream().map(...)</code> — the literal mechanism behind "one source of truth."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="steps">
+    <h2>Step-by-step build order</h2>
+    <p class="lede">
+      Each step is independently reviewable before moving to the next — say which one you want implemented
+      first.
+    </p>
+    <ol class="steps">
+      <li>Add the three Maven dependencies (<code>selenium-java</code>, <code>rest-assured</code>, <code>extentreports</code>).</li>
+      <li>Config layer: <code>Environment</code> enum, <code>ConfigManager</code> (Singleton).</li>
+      <li>UI foundation: <code>DriverFactory</code> + <code>DriverManager</code> (<code>ThreadLocal&lt;WebDriver&gt;</code>).</li>
+      <li>API foundation: <code>RequestSpecFactory</code> + <code>BaseApiClient</code>.</li>
+      <li>Base test hierarchy: <code>BaseTest</code> → <code>BaseUiTest</code> / <code>BaseApiTest</code>.</li>
+      <li>Utilities: <code>WaitUtils</code>, <code>JsonUtils</code>, <code>ScreenshotUtils</code>, <code>LoggerUtil</code>.</li>
+      <li>Reporting: <code>ExtentReportManager</code> (Singleton) + <code>TestListener</code>.</li>
+      <li>API models: request/response POJOs, field-matched to the app's own DTOs.</li>
+      <li>API clients: <code>AuthApiClient</code>, <code>StudentApiClient</code>, <code>CourseApiClient</code>, <code>EnrollmentApiClient</code>.</li>
+      <li>UI Page Objects: <code>LoginPage</code> → <code>HomePage</code> → <code>StudentsPage</code>/<code>CoursesPage</code>/<code>EnrollmentsPage</code> + <code>NavBarComponent</code>.</li>
+      <li>Test data: <code>TestDataFactory</code> + <code>UserRole</code> enum.</li>
+      <li>First smoke tests: one UI login test, one API login test — proves the wiring end-to-end.</li>
+      <li>Fill out the suites: remaining API tests → remaining UI tests → <code>CrossLayerFlowTest</code>.</li>
+      <li><code>testng-*.xml</code> suite files: smoke / ui / api / e2e / regression.</li>
+      <li>Confirm ExtentReports output end-to-end on a full regression run.</li>
+      <li class="future">Later, per your stated intention: layer BDD (Cucumber + Gherkin) on top of the same Page Objects and API clients, so step definitions become thin wrappers rather than a rewrite.</li>
+    </ol>
+  </section>
+
+  <section id="open">
+    <h2>What's deliberately not decided yet</h2>
+    <p class="lede">
+      Left open for when there's actual code in front of us: exact TestNG <code>@DataProvider</code> usage
+      for data-driven cases, whether the Enrollments page's inline grade editor needs its own small
+      sub-component class, and the precise <code>ExtentSparkReporter</code> theme/branding.
+    </p>
+  </section>
+
+  <footer class="page-footer">
+    Companion to <strong>AF-QACAD-001</strong> in the qa_Academy_java project. No code has been created in
+    the repository yet — this page is the reviewable design; say which build-order step to start with.
+  </footer>
+</div>

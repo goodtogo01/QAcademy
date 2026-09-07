@@ -1,0 +1,96 @@
+### qAcademy API — example requests
+### Works out of the box with the VS Code "REST Client" extension (humao.rest-client)
+### or IntelliJ IDEA's built-in HTTP Client. Run the app first: mvn spring-boot:run
+
+@baseUrl = http://localhost:8085
+
+### 1. Login as admin — copy the "token" from the response into @adminToken below
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "Admin123!"
+}
+
+### 2. Login as staff
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "staff",
+  "password": "Admin123!"
+}
+
+### 3. Register a new account
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "password": "Pass1234",
+  "role": "Staff"
+}
+
+### --- Paste a token from step 1 or 2 here, then the requests below will work ---
+@adminToken = PASTE_TOKEN_HERE
+
+### 4. List all students (open — no token needed)
+GET {{baseUrl}}/api/student
+
+### 5. Get a single student by id
+GET {{baseUrl}}/api/student/1
+
+### 6. Create a student (requires Admin or Staff token)
+POST {{baseUrl}}/api/student
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "firstName": "Ada",
+  "lastName": "Lovelace",
+  "email": "ada@example.com",
+  "dateOfBirth": "10/12/1815"
+}
+
+### 7. List all courses (open)
+GET {{baseUrl}}/api/course
+
+### 8. Create a course (requires Admin token)
+POST {{baseUrl}}/api/course
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Introduction to Algorithms",
+  "credits": 4
+}
+
+### 9. List all enrollments (open)
+GET {{baseUrl}}/api/enrollment
+
+### 10. Get all enrollments for one student
+GET {{baseUrl}}/api/enrollment/student/1
+
+### 11. Enroll a student in a course (requires Admin or Staff token)
+POST {{baseUrl}}/api/enrollment
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "studentId": 1,
+  "courseId": 1
+}
+
+### 12. Assign/update a grade (requires Admin or Staff token) — replace {id} with a real enrollment id
+PUT {{baseUrl}}/api/enrollment/1
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "grade": "A"
+}
+
+### 13. Delete a student (requires Admin token) — replace {id} with a real student id
+DELETE {{baseUrl}}/api/student/999
+Authorization: Bearer {{adminToken}}
