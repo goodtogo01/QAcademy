@@ -357,3 +357,4 @@ Test Automation Engineer · Azure Developer & ISTQB Advanced Test Automation Eng
 
 *Built with architectural guidance and pair-programming from Claude (Anthropic) — including the original API design
 and this dashboard.*
+# QAcademy
