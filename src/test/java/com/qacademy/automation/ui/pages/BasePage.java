@@ -1,8 +1,62 @@
 package com.qacademy.automation.ui.pages;
 
+import java.time.Duration;
+import java.util.NoSuchElementException;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.qacademy.automation.config.ConfigManager;
+
 /**
  * Common explicit waits and the driver reference every page object extends.
  */
-public class BasePage {
+public abstract class BasePage {
+	protected final WebDriver driver;
+	protected final WebDriverWait wait;
+	
+	
+	
+	protected BasePage(WebDriver driver) {
+		this.driver=driver;
+		int explicitWaitSeconds = ConfigManager.getInstance().getExplicitWaitSeconds();
+		this.wait=new WebDriverWait(driver, Duration.ofSeconds(explicitWaitSeconds));
+	}
+    protected WebElement waitForVisible(By locator) {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+	
+	protected WebElement waitForClickable (By locator) {
+		return wait.until(ExpectedConditions.elementToBeClickable(locator));
+	}
 
+	protected void click(By locator) {
+		waitForClickable(locator).click();
+	}
+	
+	protected void type(By locator, String text) {
+		WebElement element = waitForVisible(locator);
+		element.clear();
+		element.sendKeys(text);
+	}
+	
+	protected String getText(By locator) {
+		return waitForVisible(locator).getText();
+	}
+	
+	protected boolean isDisplayed(By locator) {
+		try {
+			return driver.findElement(locator).isDisplayed();
+		}catch(NoSuchElementException e) {
+			return false;
+		}
+	}
+	/** Waits for and accepts a native JS confirm()/alert() dialog - the app uses these on delete actions. */
+	protected void acceptAlert() {
+		wait.until(ExpectedConditions.alertIsPresent());
+		driver.switchTo().alert().accept();
+	}
 }
