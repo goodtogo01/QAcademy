@@ -458,6 +458,37 @@
     `;
   }
 
+  /**
+   * Validates a DD/MM/YYYY date-of-birth string beyond just its shape: confirms the
+   * day/month combination is a real calendar date (catches things like 31/04/2005, or a
+   * month value above 12 from an accidentally swapped MM/DD/YYYY entry) and rejects a
+   * birth date in the future. Returns an error message string, or null if valid.
+   */
+  function validateDateOfBirth(value) {
+    const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
+    if (!match) {
+      return "Date of birth must be in DD/MM/YYYY format.";
+    }
+    const day = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10);
+    const year = parseInt(match[3], 10);
+
+    const date = new Date(year, month - 1, day);
+    const isRealCalendarDate =
+      date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+    if (!isRealCalendarDate) {
+      return `"${value}" is not a real calendar date - check the day and month aren't swapped.`;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (date > today) {
+      return "Date of birth cannot be in the future.";
+    }
+
+    return null;
+  }
+
   async function onCreateStudent(e) {
     e.preventDefault();
     const form = e.target;
@@ -469,6 +500,14 @@
       email: form.email.value.trim(),
       dateOfBirth: form.dateOfBirth.value.trim(),
     };
+
+    const dobError = validateDateOfBirth(dto.dateOfBirth);
+    if (dobError) {
+      errEl.textContent = dobError;
+      errEl.hidden = false;
+      return;
+    }
+
     setBusy(form, true);
     try {
       await API.createStudent(dto);

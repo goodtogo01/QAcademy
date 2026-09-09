@@ -3,10 +3,17 @@ package com.qacademy.infrastructure.validation;
 import com.qacademy.core.dto.StudentCreateDto;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+
 @Component
 public class StudentCreateValidator {
 
-    private static final String DOB_PATTERN = "^\\d{2}/\\d{2}/\\d{4}$";
+    private static final String DOB_SHAPE_PATTERN = "^\\d{2}/\\d{2}/\\d{4}$";
+    private static final DateTimeFormatter DOB_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            .withResolverStyle(ResolverStyle.STRICT);
     private static final String EMAIL_PATTERN = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
 
     public ValidationResult validate(StudentCreateDto dto) {
@@ -24,11 +31,33 @@ public class StudentCreateValidator {
         result.addErrorIfTrue(!isBlank(dto.email()) && !dto.email().matches(EMAIL_PATTERN),
                 "email must be a valid email address.");
 
-        result.addErrorIfTrue(isBlank(dto.dateOfBirth()), "dateOfBirth is required.");
-        result.addErrorIfTrue(!isBlank(dto.dateOfBirth()) && !dto.dateOfBirth().matches(DOB_PATTERN),
-                "dateOfBirth must be in DD/MM/YYYY format.");
+        validateDateOfBirth(dto.dateOfBirth(), result);
 
         return result;
+    }
+
+    /**
+     * A shape-only regex (DOB_SHAPE_PATTERN) can't tell a real calendar date from an
+     * impossible one - "31/04/2005" and a swapped "25/13/2005" both matched the old
+     * pattern-only check. Parsing with a STRICT-resolved DateTimeFormatter lets java.time's
+     * own calendar rules (days-per-month, leap years) do that validation correctly.
+     */
+    private void validateDateOfBirth(String value, ValidationResult result) {
+        result.addErrorIfTrue(isBlank(value), "dateOfBirth is required.");
+        if (isBlank(value)) {
+            return;
+        }
+        result.addErrorIfTrue(!value.matches(DOB_SHAPE_PATTERN), "dateOfBirth must be in DD/MM/YYYY format.");
+        if (!value.matches(DOB_SHAPE_PATTERN)) {
+            return;
+        }
+        try {
+            LocalDate dateOfBirth = LocalDate.parse(value, DOB_FORMATTER);
+            result.addErrorIfTrue(dateOfBirth.isAfter(LocalDate.now()), "dateOfBirth cannot be in the future.");
+        } catch (DateTimeParseException e) {
+            result.addErrorIfTrue(true,
+                    "dateOfBirth '" + value + "' is not a real calendar date - check the day and month aren't swapped.");
+        }
     }
 
     private boolean isBlank(String value) {

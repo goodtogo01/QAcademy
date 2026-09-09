@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Select;
 
+import com.qacademy.automation.ui.components.NavBarComponent;
+
 /**
  * Page object for the Enrollments management screen.
  */
@@ -18,9 +20,9 @@ public class EnrollmentsPage extends BasePage {
         super(driver);
     }
     
-    public void enrollStudent(String studentId, String courstId) {
+    public void enrollStudent(String studentId, String courseId) {
     	new Select(waitForVisible(studentSelect)).selectByValue(studentId);
-    	new Select(waitForVisible(courseSelect)).selectByValue(courstId);
+    	new Select(waitForVisible(courseSelect)).selectByValue(courseId);
     	click(enrollButton);
     }
     
@@ -28,7 +30,7 @@ public class EnrollmentsPage extends BasePage {
     	return getText(formError);
     }
     
-    public void setGread(String enrollmentId, String grade) {
+    public void setGrade(String enrollmentId, String grade) {
     	type(By.id("grade-input-" + enrollmentId), grade);
     	click(By.cssSelector("[data-set-grade='" + enrollmentId + "']"));
     }
@@ -40,5 +42,9 @@ public class EnrollmentsPage extends BasePage {
     }
     public int getRowCount() {
         return driver.findElements(By.cssSelector("#enrollments-table tbody tr")).size();
+    }
+
+    public NavBarComponent navBar() {
+        return new NavBarComponent(driver);
     }
 }

@@ -3,6 +3,8 @@ package com.qacademy.automation.ui.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import com.qacademy.automation.ui.components.NavBarComponent;
+
 /**
  * Page object for the Courses management screen.
  */
@@ -27,6 +29,10 @@ public class CoursesPage extends BasePage {
     
     public int getRowCount() {
     	return driver.findElements(By.cssSelector("#courses-table tbody tr")).size();
+    }
+
+    public NavBarComponent navBar() {
+        return new NavBarComponent(driver);
     }
     
 }

@@ -3,6 +3,8 @@ package com.qacademy.automation.ui.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import com.qacademy.automation.ui.components.NavBarComponent;
+
 /**
  * Page object for the Students management screen.
  */
@@ -12,7 +14,7 @@ public class StudentsPage extends BasePage {
 	private final By lastNameInput = By.cssSelector("#student-form input[name='lastName']");
 	private final By emailInput = By.cssSelector("#student-form input[name='email']");
 	private final By dobInput = By.cssSelector("#student-form input[name='dateOfBirth']");
-	private final By saveButton = By.cssSelector("#student-form input[name='submit']");
+	private final By saveButton = By.cssSelector("#student-form button[type='submit']");
 	private final By formError = By.id("student-form-error");
 	
 	
@@ -43,5 +45,9 @@ public class StudentsPage extends BasePage {
 	
 	public int getRowCount() {
 		return driver.findElements(By.cssSelector("#students-table tbody tr")).size();
+	}
+
+	public NavBarComponent navBar() {
+		return new NavBarComponent(driver);
 	}
 }
