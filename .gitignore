@@ -5,5 +5,5 @@ target/
 .factorypath
 *.iml
 .idea/
-data/
+/data/
 *.log
