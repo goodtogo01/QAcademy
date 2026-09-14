@@ -352,7 +352,7 @@ prior permission from the copyright holder. See [`LICENSE`](LICENSE) for the ful
 **Khosruz Zaman**
 Test Automation Engineer · Azure Developer & ISTQB Advanced Test Automation Engineer certified
 
-- LinkedIn: `<add your LinkedIn URL here>`
+- LinkedIn: `https://www.linkedin.com/in/khosruz-zaman-9b126311a/`
 - GitHub: `https://github.com/goodtogo01`
 
 *Built with architectural guidance and pair-programming from Claude (Anthropic) — including the original API design
