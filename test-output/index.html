@@ -103,7 +103,7 @@
                     <div class="method-list-content passed suite-Default_suite">
                       <span>
                         <img src="passed.png" width="3%"/>
-                        <a href="#" panel-name="suite-Default_suite" title="com.qacademy.infrastructure.service.EnrollmentServiceImplTest" class="method navigator-link" hash-for-method="create_returnsSuccess_whenStudentAndCourseExist">create_returnsSuccess_whenStudentAndCourseExist</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Default_suite" title="com.qacademy.automation.tests.ui.LoginPageTest" class="method navigator-link" hash-for-method="login_withValidAdminCredentials_landsOnHomePage">login_withValidAdminCredentials_landsOnHomePage</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                     </div> <!-- method-list-content passed suite-Default_suite -->
@@ -121,14 +121,14 @@
           <div class="suite-Default_suite-class-passed">
             <div class="main-panel-header rounded-window-top">
               <img src="passed.png"/>
-              <span class="class-name">com.qacademy.infrastructure.service.EnrollmentServiceImplTest</span>
+              <span class="class-name">com.qacademy.automation.tests.ui.LoginPageTest</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="create_returnsSuccess_whenStudentAndCourseExist">
-                  </a> <!-- create_returnsSuccess_whenStudentAndCourseExist -->
-                  <span class="method-name">create_returnsSuccess_whenStudentAndCourseExist</span>
+                  <a name="login_withValidAdminCredentials_landsOnHomePage">
+                  </a> <!-- login_withValidAdminCredentials_landsOnHomePage -->
+                  <span class="method-name">login_withValidAdminCredentials_landsOnHomePage</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -136,7 +136,7 @@
         </div> <!-- panel Default_suite -->
         <div panel-name="test-xml-Default_suite" class="panel">
           <div class="main-panel-header rounded-window-top">
-            <span class="header-content">/private/var/folders/zk/ygw69c096qz6mjq_myp1dmwh0000gn/T/testng-eclipse--1831339830/testng-customsuite.xml</span>
+            <span class="header-content">/private/var/folders/zk/ygw69c096qz6mjq_myp1dmwh0000gn/T/testng-eclipse-1280810097/testng-customsuite.xml</span>
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
             <pre>
@@ -145,11 +145,11 @@
 &lt;suite name=&quot;Default suite&quot; guice-stage=&quot;DEVELOPMENT&quot;&gt;
   &lt;test thread-count=&quot;5&quot; name=&quot;Default test&quot; verbose=&quot;2&quot;&gt;
     &lt;classes&gt;
-      &lt;class name=&quot;com.qacademy.infrastructure.service.EnrollmentServiceImplTest&quot;&gt;
+      &lt;class name=&quot;com.qacademy.automation.tests.ui.LoginPageTest&quot;&gt;
         &lt;methods&gt;
-          &lt;include name=&quot;create_returnsSuccess_whenStudentAndCourseExist&quot;/&gt;
+          &lt;include name=&quot;login_withValidAdminCredentials_landsOnHomePage&quot;/&gt;
         &lt;/methods&gt;
-      &lt;/class&gt; &lt;!-- com.qacademy.infrastructure.service.EnrollmentServiceImplTest --&gt;
+      &lt;/class&gt; &lt;!-- com.qacademy.automation.tests.ui.LoginPageTest --&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- Default test --&gt;
 &lt;/suite&gt; &lt;!-- Default suite --&gt;
@@ -191,14 +191,14 @@ data.addColumn('string', 'Class');
 data.addColumn('number', 'Time (ms)');
 data.addRows(1);
 data.setCell(0, 0, 0)
-data.setCell(0, 1, 'create_returnsSuccess_whenStudentAndCourseExist')
-data.setCell(0, 2, 'com.qacademy.infrastructure.service.EnrollmentServiceImplTest')
-data.setCell(0, 3, 19);
+data.setCell(0, 1, 'login_withValidAdminCredentials_landsOnHomePage')
+data.setCell(0, 2, 'com.qacademy.automation.tests.ui.LoginPageTest')
+data.setCell(0, 3, 466);
 window.suiteTableData['Default_suite']= { tableData: data, tableDiv: 'times-div-Default_suite'}
 return data;
 }
               </script>
-              <span class="suite-total-time">Total running time: 19 ms</span>
+              <span class="suite-total-time">Total running time: 466 ms</span>
               <div id="times-div-Default_suite">
               </div> <!-- times-div-Default_suite -->
             </div> <!-- times-div -->
@@ -213,24 +213,9 @@ return data;
         </div> <!-- panel -->
         <div panel-name="ignored-methods-Default_suite" class="panel">
           <div class="main-panel-header rounded-window-top">
-            <span class="header-content">5 ignored methods</span>
+            <span class="header-content">0 ignored methods</span>
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
-            <div class="ignored-class-div">
-              <span class="ignored-class-name">com.qacademy.infrastructure.service.EnrollmentServiceImplTest</span>
-              <div class="ignored-methods-div">
-                <span class="ignored-method-name">delete_returnsFalse_whenEnrollmentNotFound</span>
-                <br/>
-                <span class="ignored-method-name">create_fails_whenStudentNotFound</span>
-                <br/>
-                <span class="ignored-method-name">updateGrade_updatesAndReturnsDto_whenEnrollmentExists</span>
-                <br/>
-                <span class="ignored-method-name">updateGrade_returnsEmpty_whenEnrollmentNotFound</span>
-                <br/>
-                <span class="ignored-method-name">create_fails_whenCourseNotFound</span>
-                <br/>
-              </div> <!-- ignored-methods-div -->
-            </div> <!-- ignored-class-div -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->
         <div panel-name="chronological-Default_suite" class="panel">
@@ -239,15 +224,31 @@ return data;
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
             <div class="chronological-class">
-              <div class="chronological-class-name">com.qacademy.infrastructure.service.EnrollmentServiceImplTest</div> <!-- chronological-class-name -->
-              <div class="configuration-method before">
-                <span class="method-name">setUp</span>
+              <div class="chronological-class-name">com.qacademy.automation.tests.ui.LoginPageTest</div> <!-- chronological-class-name -->
+              <div class="configuration-suite before">
+                <span class="method-name">beforeSuite</span>
                 <span class="method-start">0 ms</span>
+              </div> <!-- configuration-suite before -->
+              <div class="configuration-method before">
+                <span class="method-name">setUpDriver</span>
+                <span class="method-start">22 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method before">
+                <span class="method-name">openLoginPage</span>
+                <span class="method-start">5869 ms</span>
               </div> <!-- configuration-method before -->
               <div class="test-method">
-                <span class="method-name">create_returnsSuccess_whenStudentAndCourseExist</span>
-                <span class="method-start">556 ms</span>
+                <span class="method-name">login_withValidAdminCredentials_landsOnHomePage</span>
+                <span class="method-start">6364 ms</span>
               </div> <!-- test-method -->
+              <div class="configuration-method after">
+                <span class="method-name">tearDown</span>
+                <span class="method-start">6831 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="configuration-suite after">
+                <span class="method-name">afterSuite</span>
+                <span class="method-start">6975 ms</span>
+              </div> <!-- configuration-suite after -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->
       </div> <!-- main-panel-root -->

@@ -2,18 +2,12 @@ package com.qacademy.automation.data;
 
 import java.util.UUID;
 
-import org.h2.command.ddl.CreateAggregate;
-
 import com.qacademy.automation.api.models.request.CourseCreateRequest;
 import com.qacademy.automation.api.models.request.EnrollmentCreateRequest;
 import com.qacademy.automation.api.models.request.StudentCreateRequest;
-import com.qacademy.automation.ui.pages.EnrollmentsPage;
-
-import lombok.val;
 
 /**
  * Builds valid and invalid payloads used by both the UI and API test lanes.
- * 
  *
  * Every "valid" method generates a fresh, unique value (via a random suffix)
  * rather than a fixed constant - the H2 database is a persistent file, not
@@ -25,9 +19,8 @@ import lombok.val;
  */
 public final class TestDataFactory {
 
-	public TestDataFactory() {
+	private TestDataFactory() {
 		// static factory - never instantiated
-
 	}
 
 	private static String uniqueSuffix() {
@@ -44,24 +37,22 @@ public final class TestDataFactory {
 
 	/**
 	 * A real calendar-invalid date (April only has 30 days) - the exact bug class
-	 * the DOB fix now catches.
+	 * the DOB fix now catches. Only the date of birth is varied; firstName/lastName/email
+	 * stay valid so a failure here can only be about the date.
 	 */
-
 	public static StudentCreateRequest studentWithInvalidDateOfBirth() {
 		StudentCreateRequest valid = validStudent();
-		return new StudentCreateRequest("", valid.lastName(), valid.firstName(), "31/04/2005");
+		return new StudentCreateRequest(valid.firstName(), valid.lastName(), valid.email(), "31/04/2005");
 	}
 
 	public static StudentCreateRequest studentWithBlankFirstName() {
 		StudentCreateRequest valid = validStudent();
 		return new StudentCreateRequest("", valid.lastName(), valid.email(), valid.dateOfBirth());
-
 	}
 
 	public static StudentCreateRequest studentWithInvalidEmail() {
 		StudentCreateRequest valid = validStudent();
-		return new StudentCreateRequest("", valid.lastName(), "not-an-email", valid.dateOfBirth());
-
+		return new StudentCreateRequest(valid.firstName(), valid.lastName(), "not-an-email", valid.dateOfBirth());
 	}
 
 	// ---------------------------------------------------------------- Courses
@@ -75,34 +66,19 @@ public final class TestDataFactory {
 		CourseCreateRequest valid = validCourse();
 		return new CourseCreateRequest(valid.name(), 0);
 	}
-    /**
-     * Passes the UI form's own limit (input max="12") but fails the backend's real rule
-     * (CourseCreateValidator caps credits at 6) - only an API-level test can catch this gap.
-     */
-	
-	public static CourseCreateRequest courseWithCreditsAboveBackendLimit() {
-	CourseCreateRequest valid = validCourse();
-	
-	return new CourseCreateRequest(valid.name(), 7);
-	}
-	
 
-    // ---------------------------------------------------------------- Enrollments
-	
+	/**
+	 * Passes the UI form's own limit (input max="12") but fails the backend's real rule
+	 * (CourseCreateValidator caps credits at 6) - only an API-level test can catch this gap.
+	 */
+	public static CourseCreateRequest courseWithCreditsAboveBackendLimit() {
+		CourseCreateRequest valid = validCourse();
+		return new CourseCreateRequest(valid.name(), 7);
+	}
+
+	// ---------------------------------------------------------------- Enrollments
+
 	public static EnrollmentCreateRequest enrollment(long studentId, long courseId) {
 		return new EnrollmentCreateRequest(studentId, courseId);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }
