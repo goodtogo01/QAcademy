@@ -33,4 +33,8 @@ public class EnrollmentApiClient extends BaseApiClient {
 		Map<String, Object> body = Map.of("grade", grade);
 		return put(ApiEndpoints.ENROLLMENT + "/" + enrollmentId, body, token);
 	}
+    /** Requires an Admin token. */
+    public Response deleteEnrollment(String enrollmentId, String token) {
+        return delete(ApiEndpoints.ENROLLMENT + "/" + enrollmentId, token);
+    }
 }
