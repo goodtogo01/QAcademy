@@ -35,4 +35,8 @@ public class CoursesPage extends BasePage {
         return new NavBarComponent(driver);
     }
     
+    public boolean isAddCourseFormDisplayed() {
+        return isDisplayed(nameInput);
+    }
+    
 }

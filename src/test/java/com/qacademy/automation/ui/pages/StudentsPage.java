@@ -50,4 +50,8 @@ public class StudentsPage extends BasePage {
 	public NavBarComponent navBar() {
 		return new NavBarComponent(driver);
 	}
+	
+	public boolean isAddStudentFormDisplayed() {
+	    return isDisplayed(firstNameInput);
+	}
 }

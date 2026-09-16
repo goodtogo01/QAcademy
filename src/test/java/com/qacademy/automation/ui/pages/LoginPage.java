@@ -50,7 +50,9 @@ public class LoginPage extends BasePage{
 	public boolean isErrorDisplayed() {
 		return isDisplayed(errorMessage);
 	}
-	public void goToRegister() {
-		click(showRegisterLink);
+	
+	public RegisterPage goToRegister() {
+	    click(showRegisterLink);
+	    return new RegisterPage(driver);
 	}
 }
