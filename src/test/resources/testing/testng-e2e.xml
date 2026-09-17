@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="qAcademy E2E Suite" verbose="1">
+
+    <listeners>
+        <listener class-name="com.qacademy.automation.listeners.TestListener"/>
+    </listeners>
+
+    <test name="E2E Tests">
+        <classes>
+            <class name="com.qacademy.automation.tests.e2e.CrossLayerFlowTest"/>
+        </classes>
+    </test>
+
+</suite>

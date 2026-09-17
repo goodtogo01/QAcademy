@@ -1,6 +1,5 @@
 package com.qacademy.automation.tests.ui;
 
-import java.io.ObjectInputFilter.Config;
 import java.time.Duration;
 
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -33,6 +32,13 @@ public class EnrollmentsPageTest  extends BaseUiTest{
 	
 	private HomePage homePage;
 	private String adminToken;
+
+	// Set as a side effect of seedStudent()/seedCourse() below, so a test method that
+	// needs the actual generated name/email (not just the id) - see
+	// enrollStudent_withValidStudentAndCourse_addRow() - doesn't need its own copy of
+	// TestDataFactory logic.
+	private StudentCreateRequest lastStudentData;
+	private CourseCreateRequest lastCourseData;
 	
     @BeforeMethod(alwaysRun = true)
     public void loginAsAdmin() {
@@ -42,32 +48,42 @@ public class EnrollmentsPageTest  extends BaseUiTest{
         
     }
 	private long seedStudent() {
-		StudentCreateRequest data = TestDataFactory.validStudent();
+		lastStudentData = TestDataFactory.validStudent();
 		return new StudentApiClient()
-				.createStudent(data.firstName(), data.lastName(), data.email(), data.dateOfBirth(), adminToken)
+				.createStudent(lastStudentData.firstName(), lastStudentData.lastName(), lastStudentData.email(),
+						lastStudentData.dateOfBirth(), adminToken)
 				.jsonPath().getLong("id");
 	}
     private long seedCourse() {
-    	CourseCreateRequest data = TestDataFactory.validCourse();
-    	return new CourseApiClient().createCourse(data.name(), data.credits(), adminToken).jsonPath().getLong("id");
+    	lastCourseData = TestDataFactory.validCourse();
+    	return new CourseApiClient().createCourse(lastCourseData.name(), lastCourseData.credits(), adminToken).jsonPath().getLong("id");
     }
 
     @Test
     public void enrollStudent_withValidStudentAndCourse_addRow() {
     	long studentId = seedStudent();
+    	String studentFullName = lastStudentData.firstName() + " " + lastStudentData.lastName();
     	long courseId = seedCourse();
+    	String courseName = lastCourseData.name();
     	
     	// Seed first, then open the page - the enrollment form's dropdowns are populated
         // from a fresh fetch, so the newly-created student/course need to already exist.
     	
     	
     	EnrollmentsPage enrollmentsPage = homePage.navBar().goToEnrollments();
-    	int before = enrollmentsPage.getRowCount();
     	
     	enrollmentsPage.enrollStudent(String.valueOf(studentId), String.valueOf(courseId));
     	
-    	new WebDriverWait(getDriver(), Duration.ofSeconds(ConfigManager.getInstance().getExplicitWaitSeconds()))
-    	.until(driver -> enrollmentsPage.getRowCount() == before + 1);
+    	// Identity-based, not a row-count delta: the "All enrollments" table is never
+    	// reset between suite runs, so a plain getRowCount()==before+1 check has to race
+    	// an ever-growing, shared list (this is exactly what made this one test flaky -
+    	// see EnrollmentsPage.isEnrollmentPresentByNames()). The random suffix
+    	// TestDataFactory gives every seeded name makes this pairing unique, so it only
+    	// has to find its own row. isEnrollmentPresentByNames() already waits up to the
+    	// explicit-wait timeout internally (same as isEnrollmentRowPresent() used below in
+    	// deleteEnrollment_removesRow) - no extra WebDriverWait wrapper needed here.
+    	Assert.assertTrue(enrollmentsPage.isEnrollmentPresentByNames(studentFullName, courseName),
+    			"Expected a new enrollment row for " + studentFullName + " / " + courseName + " to appear");
     			
     }
     
@@ -107,43 +123,3 @@ public class EnrollmentsPageTest  extends BaseUiTest{
         
     }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-

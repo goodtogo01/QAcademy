@@ -12,7 +12,7 @@ import java.time.format.ResolverStyle;
 public class StudentCreateValidator {
 
     private static final String DOB_SHAPE_PATTERN = "^\\d{2}/\\d{2}/\\d{4}$";
-    private static final DateTimeFormatter DOB_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    private static final DateTimeFormatter DOB_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/uuuu")
             .withResolverStyle(ResolverStyle.STRICT);
     private static final String EMAIL_PATTERN = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
 

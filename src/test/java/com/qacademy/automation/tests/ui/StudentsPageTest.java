@@ -1,6 +1,5 @@
 package com.qacademy.automation.tests.ui;
 
-import java.sql.DriverManager;
 import java.time.Duration;
 
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -68,7 +67,14 @@ public class StudentsPageTest extends BaseUiTest {
 	    		   .jsonPath().getLong("id");
 	       
 	       // Re-open the page so the student seeded via the API (not the UI) shows up in the table.
-	       studentsPage = new StudentsPage(getDriver()).navBar().goToStudents();
+	       // A plain goToStudents() click won't do it here: we're already on the Students
+	       // page (BaseUiTest's @BeforeMethod put us there), and clicking a nav link whose
+	       // route is the one we're already on doesn't change window.location.hash - so the
+	       // SPA's hashchange-driven router never re-fires and the table never re-fetches.
+	       // An explicit browser refresh forces the app to reboot and re-render this route
+	       // with fresh data (the login session survives via sessionStorage).
+	       getDriver().navigate().refresh();
+	       studentsPage = new StudentsPage(getDriver());
 	       Assert.assertTrue(studentsPage.isStudentRowPresent(String.valueOf(studentId)));
 	       studentsPage.deleteStudent(String.valueOf(studentId));
 	       

@@ -36,7 +36,7 @@ public class CoursesPage extends BasePage {
     }
     
     public boolean isAddCourseFormDisplayed() {
-        return isDisplayed(nameInput);
+        return isVisibleWithinWait(nameInput);
     }
     
 }

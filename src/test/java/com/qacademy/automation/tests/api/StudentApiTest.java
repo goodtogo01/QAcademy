@@ -51,17 +51,17 @@ public class StudentApiTest extends BaseApiTest {
 		
 	}
 	@Test
-	public void createStudent_as_Admin_return_200() {
+	public void createStudent_asAdmin_returns201() {
 		StudentCreateRequest data = TestDataFactory.validStudent();
 		Response response = studentApiClient.createStudent(
 				data.firstName(), data.lastName(), data.email(), data.dateOfBirth(), tokenFor(UserRole.ADMIN));
 		
-		Assert.assertEquals(response.statusCode(), 200);
+		Assert.assertEquals(response.statusCode(), 201);
 		Assert.assertNotNull(response.jsonPath().getLong("id"));
-		Assert.assertEquals(response.jsonPath().getShort("email"), data.email());
+		Assert.assertEquals(response.jsonPath().getString("email"), data.email());
 	}
 	@Test
-	public void creatStudent_asStuff_return_201() {
+	public void createStudent_asStaff_returns201() {
 		// Admin OR Staff can create students - unlike delete, which is Admin-only (see below).
 		  StudentCreateRequest data = TestDataFactory.validStudent();
 			Response response = studentApiClient.createStudent(
@@ -85,7 +85,7 @@ public class StudentApiTest extends BaseApiTest {
 		
 		Response response = studentApiClient.createStudent(
                 data.firstName(), data.lastName(), data.email(), data.dateOfBirth(), tokenFor(UserRole.ADMIN));
-		Assert.assertEquals(response.statusCode(), 400);
+        Assert.assertEquals(response.statusCode(), 400);
         Assert.assertEquals(Arrays.asList(response.as(String[].class)), List.of("firstName is required."));
     }
 	@Test

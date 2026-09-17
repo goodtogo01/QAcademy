@@ -131,6 +131,24 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<!-- Without this, "mvn test" only runs plain @Test-annotated JUnit-style
+			     classes it finds by naming convention (*Test.java) with default
+			     settings - it never looks at any TestNG suite XML, so none of the
+			     <listeners>, <suite-files>, or hand-picked <include>/<exclude>
+			     wiring in src/test/resources/testing/*.xml would ever take effect.
+			     Defaulting to the regression suite means a bare "mvn test" runs
+			     everything; pick a smaller lane with:
+			       mvn test -DsuiteXmlFile=src/test/resources/testing/testng-smoke.xml -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<suiteXmlFiles>
+						<suiteXmlFile>src/test/resources/testing/testng-regression.xml</suiteXmlFile>
+					</suiteXmlFiles>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

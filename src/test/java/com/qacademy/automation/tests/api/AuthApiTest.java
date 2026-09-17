@@ -59,7 +59,7 @@ public class AuthApiTest extends BaseApiTest {
 	}
   
 	@Test
-	public void register_withShortPassword_returns_400_withInValidationArray() {
+	public void register_withInvalidRole_returns_400_withValidationArray() {
 		Response response = authApiClient.register(uniqueUsername(), "Password1!", "SuperAdmin");
 		
 		Assert.assertEquals(response.statusCode(), 400);
@@ -68,7 +68,7 @@ public class AuthApiTest extends BaseApiTest {
 	}
 	
 	@Test
-	public void login_withValidCredentials_returnsTokentAndExpiry() {
+	public void login_withValidCredentials_returnsTokenAndExpiry() {
 		Response response = authApiClient.login(UserRole.ADMIN.getUserName(), UserRole.ADMIN.getPassword());
 		
 		Assert.assertEquals(response.statusCode(), 200);

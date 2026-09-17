@@ -1,0 +1,871 @@
+<title>qAcademy Test Blueprint</title>
+<style>
+  :root{
+    --bg:#eef1f6;
+    --surface:#ffffff;
+    --surface-2:#f7f9fc;
+    --ink:#131a2b;
+    --ink-soft:#4b5468;
+    --ink-faint:#8590a6;
+    --border:#dbe1ea;
+    --border-soft:#e8ecf2;
+    --accent:#0f6e63;
+    --accent-ink:#ffffff;
+    --accent-soft:#e1f1ee;
+    --accent-line:#bfe0da;
+    --amber:#a86a06;
+    --amber-soft:#faedd3;
+    --amber-line:#eed6a1;
+    --violet:#5c3fa0;
+    --violet-soft:#ece6f8;
+    --violet-line:#d6c7ef;
+    --blue:#2957a4;
+    --blue-soft:#e4edf9;
+    --blue-line:#c4d7f0;
+    --danger:#a3352b;
+    --danger-soft:#fbe9e7;
+    --danger-line:#f0c6c0;
+    --api:#a34d9c;
+    --api-soft:#f7e9f5;
+    --api-line:#e8c6e2;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --sans: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0f141d; --surface:#161d29; --surface-2:#1b2331;
+      --ink:#e9edf4; --ink-soft:#a7b0c2; --ink-faint:#6c7689;
+      --border:#2b3242; --border-soft:#232a38;
+      --accent:#3fbfae; --accent-ink:#06201c; --accent-soft:#173330; --accent-line:#255049;
+      --amber:#e0a83f; --amber-soft:#332810; --amber-line:#5a481c;
+      --violet:#b09ae6; --violet-soft:#241c38; --violet-line:#42345e;
+      --blue:#8fb4ea; --blue-soft:#182742; --blue-line:#2b4468;
+      --danger:#e08d84; --danger-soft:#331b18; --danger-line:#5a2e28;
+      --api:#dd9bd6; --api-soft:#332030; --api-line:#5a3c56;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f141d; --surface:#161d29; --surface-2:#1b2331;
+    --ink:#e9edf4; --ink-soft:#a7b0c2; --ink-faint:#6c7689;
+    --border:#2b3242; --border-soft:#232a38;
+    --accent:#3fbfae; --accent-ink:#06201c; --accent-soft:#173330; --accent-line:#255049;
+    --amber:#e0a83f; --amber-soft:#332810; --amber-line:#5a481c;
+    --violet:#b09ae6; --violet-soft:#241c38; --violet-line:#42345e;
+    --blue:#8fb4ea; --blue-soft:#182742; --blue-line:#2b4468;
+    --danger:#e08d84; --danger-soft:#331b18; --danger-line:#5a2e28;
+    --api:#dd9bd6; --api-soft:#332030; --api-line:#5a3c56;
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px; margin:0 auto; padding-inline:20px; padding-block:0 64px;}
+  a{color:var(--accent);}
+  code, .mono{font-family:var(--mono);}
+
+  /* ---------- Masthead ---------- */
+  .masthead{border-bottom:1px solid var(--border); background:linear-gradient(var(--surface), var(--surface)) padding-box; position:relative; overflow:hidden;}
+  .masthead::before{content:""; position:absolute; inset:0; background-image:repeating-linear-gradient(0deg, transparent, transparent 27px, var(--border-soft) 27px, var(--border-soft) 28px); mask-image:linear-gradient(to bottom, black, transparent 85%); opacity:.6; pointer-events:none;}
+  .masthead-inner{max-width:1080px; margin:0 auto; padding:38px 20px 30px; position:relative;}
+  .eyebrow{display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent-line); padding:4px 10px 4px 8px; border-radius:100px;}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+  h1.title{font-family:var(--serif); font-weight:600; font-size:clamp(28px, 4.4vw, 42px); line-height:1.1; margin:16px 0 10px; text-wrap:balance; letter-spacing:-.01em;}
+  .subtitle{color:var(--ink-soft); font-size:16px; max-width:680px; margin:0 0 22px;}
+  .meta-row{display:flex; flex-wrap:wrap; gap:8px 10px;}
+  .chip{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ink-soft); background:var(--surface-2); border:1px solid var(--border); padding:5px 10px; border-radius:8px; font-family:var(--mono);}
+
+  section{margin-top:46px;}
+  .section-head{display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px; border-bottom:1px solid var(--border); padding-bottom:12px;}
+  .section-head h2{font-family:var(--serif); font-size:22px; font-weight:600; margin:0; display:flex; align-items:center; gap:10px;}
+  .section-index{font-family:var(--mono); font-size:14px;}
+  .section-sub{color:var(--ink-faint); font-size:13px;}
+  .lede{color:var(--ink-soft); max-width:760px; margin:0 0 20px;}
+
+  /* ---------- Stat dashboard ---------- */
+  .stats{display:grid; grid-template-columns:repeat(5, 1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
+  .stat{background:var(--surface); padding:18px 16px 16px;}
+  .stat .num{font-family:var(--serif); font-size:30px; font-weight:600; font-variant-numeric:tabular-nums; color:var(--ink); display:flex; align-items:baseline; gap:6px;}
+  .stat .num .split{font-size:14px; color:var(--ink-faint); font-family:var(--sans);}
+  .stat .lbl{font-size:12px; color:var(--ink-faint); margin-top:2px;}
+  @media (max-width:820px){ .stats{grid-template-columns:repeat(3,1fr);} }
+  @media (max-width:560px){ .stats{grid-template-columns:repeat(2,1fr);} }
+
+  /* ---------- Strategy grid ---------- */
+  .strategy-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:14px;}
+  @media (max-width:820px){ .strategy-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .strategy-grid{grid-template-columns:1fr;} }
+  .strategy-card{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 18px 18px;}
+  .strategy-card h3{font-size:14.5px; margin:0 0 8px; display:flex; align-items:center; gap:8px;}
+  .strategy-card h3 .ic{width:26px;height:26px; border-radius:7px; display:inline-flex;align-items:center;justify-content:center; font-size:14px; flex:none;}
+  .ic-ui{background:var(--accent-soft); color:var(--accent);}
+  .ic-api{background:var(--api-soft); color:var(--api);}
+  .strategy-card p{margin:0; color:var(--ink-soft); font-size:13.5px;}
+  .strategy-card p + p{margin-top:8px;}
+
+  /* ---------- Architecture diagram ---------- */
+  .arch{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:22px 20px; overflow-x:auto;}
+  .arch svg{display:block; min-width:640px; width:100%; height:auto;}
+  .lyr-box{fill:var(--surface-2); stroke:var(--border); stroke-width:1;}
+  .lyr-title{font-family:var(--sans); font-size:12px; font-weight:600; fill:var(--ink);}
+  .lyr-sub{font-family:var(--mono); font-size:10.5px; fill:var(--ink-faint);}
+  .lyr-accent{fill:var(--accent-soft); stroke:var(--accent-line);}
+  .lyr-accent-api{fill:var(--api-soft); stroke:var(--api-line);}
+  .lyr-line{stroke:var(--ink-faint); stroke-width:1.3; fill:none;}
+
+  /* ---------- Method list ---------- */
+  .method-list{display:grid; grid-template-columns:repeat(2,1fr); gap:10px 18px;}
+  @media (max-width:680px){ .method-list{grid-template-columns:1fr;} }
+  .method-item{display:flex; gap:12px; padding:12px 0; border-top:1px solid var(--border-soft);}
+  .method-item:nth-child(-n+2){border-top:none;}
+  .method-item .n{font-family:var(--mono); color:var(--ink-faint); font-size:12px; padding-top:2px; flex:none; width:20px;}
+  .method-item h4{margin:0 0 3px; font-size:14px;}
+  .method-item p{margin:0; color:var(--ink-soft); font-size:13px;}
+
+  /* ---------- Filter bar ---------- */
+  .filterbar{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .filter-btn{font-family:var(--sans); font-size:12.5px; font-weight:500; padding:6px 13px; border-radius:100px; border:1px solid var(--border); background:var(--surface); color:var(--ink-soft); cursor:pointer; transition:background .12s, color .12s, border-color .12s;}
+  .filter-btn:hover{border-color:var(--ink-faint);}
+  .filter-btn[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink);}
+
+  /* ---------- Module group ---------- */
+  .module{margin-bottom:34px;}
+  .module-head{display:flex; align-items:center; gap:12px; margin-bottom:12px;}
+  .module-head .badge-count{font-family:var(--mono); font-size:12px; color:var(--ink-faint); background:var(--surface-2); border:1px solid var(--border); border-radius:100px; padding:2px 9px;}
+  .module-head h3{font-family:var(--serif); font-size:18px; margin:0; font-weight:600;}
+  .module-desc{color:var(--ink-faint); font-size:13px; margin:0 0 14px; max-width:680px;}
+
+  /* ---------- Test case card ---------- */
+  .case{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 18px 18px; margin-bottom:12px;}
+  .case-top{display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap;}
+  .case-id{font-family:var(--mono); font-size:12px; padding:2px 8px; border-radius:6px; display:inline-block; margin-bottom:8px;}
+  .case-id-ui{color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent-line);}
+  .case-id-api{color:var(--api); background:var(--api-soft); border:1px solid var(--api-line);}
+  .case h4{font-size:15.5px; margin:0 0 4px; font-weight:600;}
+  .case .scenario{color:var(--ink-soft); font-size:13.5px; margin:0 0 12px;}
+  .tag{font-size:11px; font-weight:600; letter-spacing:.02em; padding:3px 9px; border-radius:100px; white-space:nowrap; border:1px solid transparent;}
+  .tag-positive{background:var(--accent-soft); color:var(--accent); border-color:var(--accent-line);}
+  .tag-negative{background:var(--amber-soft); color:var(--amber); border-color:var(--amber-line);}
+  .tag-rbac{background:var(--violet-soft); color:var(--violet); border-color:var(--violet-line);}
+  .tag-crosslayer{background:var(--blue-soft); color:var(--blue); border-color:var(--blue-line);}
+  .tag-contract{background:var(--api-soft); color:var(--api); border-color:var(--api-line);}
+
+  .case-body{display:grid; grid-template-columns:1.3fr 1fr; gap:16px; margin-top:4px; padding-top:14px; border-top:1px solid var(--border-soft);}
+  @media (max-width:700px){ .case-body{grid-template-columns:1fr;} }
+  .case-body h5{font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-faint); margin:0 0 8px;}
+  .steps{margin:0; padding-left:18px;}
+  .steps li{font-size:13px; color:var(--ink-soft); margin-bottom:5px;}
+  .steps li::marker{font-family:var(--mono); color:var(--ink-faint); font-size:12px;}
+  .side-block + .side-block{margin-top:14px;}
+  .expected{font-size:13px; color:var(--ink); background:var(--surface-2); border-left:3px solid var(--accent); padding:8px 10px; border-radius:0 6px 6px 0;}
+  .expected.api-flavor{border-left-color:var(--api);}
+  .maps-to{font-size:12.5px; color:var(--ink-soft);}
+  .maps-to .mono{color:var(--ink);}
+  .endpoint-line{font-size:12px; color:var(--ink-faint); margin:0 0 10px; font-family:var(--mono);}
+  .endpoint-line .verb{font-weight:700; padding:1px 6px; border-radius:4px; margin-right:6px;}
+  .verb-get{background:var(--blue-soft); color:var(--blue);}
+  .verb-post{background:var(--accent-soft); color:var(--accent);}
+  .verb-put{background:var(--amber-soft); color:var(--amber);}
+  .verb-delete{background:var(--danger-soft); color:var(--danger);}
+
+  /* ---------- Defect case studies ---------- */
+  .defect{background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--danger); border-radius:0 12px 12px 0; padding:16px 18px; margin-bottom:14px;}
+  .defect-head{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;}
+  .defect-head h4{font-size:15px; margin:0;}
+  .defect-tag{font-family:var(--mono); font-size:11px; color:var(--danger); background:var(--danger-soft); border:1px solid var(--danger-line); padding:2px 8px; border-radius:6px;}
+  .defect-flow{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
+  @media (max-width:700px){ .defect-flow{grid-template-columns:1fr;} }
+  .defect-step{font-size:13px; color:var(--ink-soft);}
+  .defect-step b{display:block; color:var(--ink); font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px;}
+
+  /* ---------- Surface tabs ---------- */
+  .surface-tabs{
+    display:flex;
+    gap:6px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    padding:5px;
+    border-radius:14px;
+    margin-top:40px;
+    position:sticky;
+    top:12px;
+    z-index:5;
+  }
+  .surface-tab{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    padding:12px 16px;
+    border-radius:10px;
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    font-family:var(--sans);
+    font-size:14.5px;
+    font-weight:600;
+    color:var(--ink-faint);
+    transition:background .15s, color .15s, box-shadow .15s;
+  }
+  .surface-tab .swatch{width:9px; height:9px; border-radius:50%; flex:none;}
+  .surface-tab[aria-selected="true"]{background:var(--surface); color:var(--ink); box-shadow:0 1px 3px rgba(20,25,40,.12);}
+  .surface-tab[data-tab="ui"] .swatch{background:var(--accent);}
+  .surface-tab[data-tab="api"] .swatch{background:var(--api);}
+  .surface-tab .count{font-family:var(--mono); font-weight:400; font-size:12px; color:var(--ink-faint);}
+
+  .surface-panel[hidden]{display:none;}
+
+  footer{margin-top:56px; padding-top:20px; border-top:1px solid var(--border); color:var(--ink-faint); font-size:12.5px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+  ::selection{background:var(--accent-soft); color:var(--ink);}
+</style>
+
+<div class="masthead">
+  <div class="masthead-inner">
+    <span class="eyebrow"><span class="dot"></span>Test Automation · Strategy &amp; Test Plan</span>
+    <h1 class="title">qAcademy Test Blueprint</h1>
+    <p class="subtitle">How qAcademy's automation suite is designed and verified end to end — the UI layer driven through the real browser, and the API layer exercised directly over HTTP — and how every test case ties back to a real piece of functionality.</p>
+    <div class="meta-row">
+      <span class="chip">Selenium 4.27</span>
+      <span class="chip">RestAssured 5.5</span>
+      <span class="chip">TestNG 7.12</span>
+      <span class="chip">Page Object Model</span>
+      <span class="chip">API Client Object Model</span>
+      <span class="chip">ExtentReports 5.1</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ================= OVERVIEW / STATS ================= -->
+  <section>
+    <div class="stats">
+      <div class="stat"><div class="num">48</div><div class="lbl">Total test cases</div></div>
+      <div class="stat"><div class="num">16<span class="split">/ 32</span></div><div class="lbl">UI cases / API cases</div></div>
+      <div class="stat"><div class="num">9</div><div class="lbl">Screens &amp; endpoint groups</div></div>
+      <div class="stat"><div class="num">12</div><div class="lbl">Design techniques applied</div></div>
+      <div class="stat"><div class="num">3</div><div class="lbl">Roles verified throughout</div></div>
+    </div>
+  </section>
+
+  <!-- ================= SHARED FOUNDATION ================= -->
+  <section>
+    <div class="section-head">
+      <h2><span class="section-index">01</span> Shared Foundation</h2>
+      <span class="section-sub">What the UI and API suites build on together</span>
+    </div>
+    <p class="lede">The UI and API suites are two different clients of the same application, but they share one skeleton underneath: the same test data, the same reporting pipeline, and the same suite orchestration. That's deliberate — a defect found by an API test and a defect found by a UI test show up side by side in one report, not two.</p>
+    <div class="strategy-grid">
+      <div class="strategy-card">
+        <h3><span class="ic ic-ui">✳</span>One test data factory</h3>
+        <p><code>TestDataFactory</code> builds every valid and invalid payload used by both lanes. Because the H2 database is a persistent file — never reset between runs — every "valid" record carries a fresh UUID suffix, so the same suite can run a hundred times without tripping over its own leftover data.</p>
+      </div>
+      <div class="strategy-card">
+        <h3><span class="ic ic-ui">☰</span>One suite orchestration</h3>
+        <p>Five TestNG XML files — <code>smoke</code>, <code>ui</code>, <code>api</code>, <code>e2e</code>, and the combined <code>regression</code> — let a two-minute confidence check or a full pass run from a single Maven command, mixing or isolating either lane at will.</p>
+      </div>
+      <div class="strategy-card">
+        <h3><span class="ic ic-ui">⟲</span>One resilience &amp; reporting layer</h3>
+        <p>A shared <code>RetryAnalyzer</code> gives a genuinely flaky test one second attempt. A single TestNG <code>ITestListener</code> logs every UI and API outcome into one ExtentReports HTML report, screenshotting UI failures automatically.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SURFACE TABS ================= -->
+  <div class="surface-tabs" role="tablist" aria-label="Choose a test surface">
+    <button class="surface-tab" role="tab" data-tab="ui" aria-selected="true"><span class="swatch"></span>UI Testing <span class="count">16 cases</span></button>
+    <button class="surface-tab" role="tab" data-tab="api" aria-selected="false"><span class="swatch"></span>API Testing <span class="count">32 cases</span></button>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- =====================  UI PANEL  ====================== -->
+  <!-- ======================================================= -->
+  <div class="surface-panel" data-panel="ui">
+
+    <section>
+      <div class="section-head">
+        <h2><span class="section-index" style="color:var(--accent)">02</span> UI Testing Strategy</h2>
+        <span class="section-sub">Architecture &amp; execution model</span>
+      </div>
+      <p class="lede">The UI suite is a black-box client against the running qAcademy application — it drives a real browser against the real Spring Boot server and H2 database, the same way a person would.</p>
+      <div class="strategy-grid">
+        <div class="strategy-card">
+          <h3><span class="ic ic-ui">▤</span>Page Object Model</h3>
+          <p>Every screen — <code>LoginPage</code>, <code>StudentsPage</code>, <code>CoursesPage</code>, <code>EnrollmentsPage</code>, <code>RegisterPage</code> — is one class owning its own locators and actions. Tests read as user intent (<code>studentsPage.addStudent(...)</code>), never as raw <code>By</code> selectors.</p>
+          <p>The top navigation bar is factored out once into a <code>NavBarComponent</code> and reused by every page object, since it's identical chrome on every screen after login.</p>
+        </div>
+        <div class="strategy-card">
+          <h3><span class="ic ic-ui">◷</span>Explicit, condition-based waits</h3>
+          <p>Every page extends a shared <code>BasePage</code> wrapping Selenium's <code>WebDriverWait</code>: actions wait for the real DOM condition they need, never a fixed sleep.</p>
+          <p>A bounded-wait check (<code>isVisibleWithinWait</code>) is used anywhere a test asks "did this appear after that action" — the app renders confirmations and errors asynchronously, so one instantaneous check would race the network call.</p>
+        </div>
+        <div class="strategy-card">
+          <h3><span class="ic ic-ui">⇄</span>Thread-safe driver lifecycle</h3>
+          <p>A Factory Method (<code>DriverFactory</code>) builds the browser named in <code>config.properties</code>; a <code>ThreadLocal</code>-backed <code>DriverManager</code> hands each test thread its own private instance, safe for parallel execution.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2><span class="section-index" style="color:var(--accent)">03</span> Framework Layers</h2>
+        <span class="section-sub">Who calls whom</span>
+      </div>
+      <div class="arch">
+        <svg viewBox="0 0 980 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Layered diagram: Test classes call Page Objects, which call BasePage, which calls WebDriver via DriverManager and DriverFactory, all reading config.properties and reporting through the TestNG listener into ExtentReports.">
+          <defs><marker id="arrowUi" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-faint)"></path></marker></defs>
+          <rect x="30" y="20" width="220" height="58" rx="10" class="lyr-box lyr-accent"></rect>
+          <text x="46" y="44" class="lyr-title">Test Classes</text>
+          <text x="46" y="60" class="lyr-sub">LoginPageTest, StudentsPageTest…</text>
+          <rect x="30" y="120" width="220" height="58" rx="10" class="lyr-box"></rect>
+          <text x="46" y="144" class="lyr-title">Page Objects</text>
+          <text x="46" y="160" class="lyr-sub">StudentsPage + NavBarComponent</text>
+          <rect x="30" y="220" width="220" height="58" rx="10" class="lyr-box"></rect>
+          <text x="46" y="244" class="lyr-title">BasePage</text>
+          <text x="46" y="260" class="lyr-sub">type · click · isVisibleWithinWait</text>
+          <rect x="330" y="220" width="230" height="58" rx="10" class="lyr-box"></rect>
+          <text x="346" y="244" class="lyr-title">DriverManager</text>
+          <text x="346" y="260" class="lyr-sub">ThreadLocal&lt;WebDriver&gt;</text>
+          <rect x="630" y="220" width="230" height="58" rx="10" class="lyr-box"></rect>
+          <text x="646" y="244" class="lyr-title">DriverFactory</text>
+          <text x="646" y="260" class="lyr-sub">reads config.properties</text>
+          <rect x="330" y="120" width="230" height="58" rx="10" class="lyr-box"></rect>
+          <text x="346" y="144" class="lyr-title">TestNG Listener</text>
+          <text x="346" y="160" class="lyr-sub">pass / fail / screenshot</text>
+          <rect x="630" y="120" width="230" height="58" rx="10" class="lyr-box"></rect>
+          <text x="646" y="144" class="lyr-title">ExtentReports</text>
+          <text x="646" y="160" class="lyr-sub">test-output/ExtentReport.html</text>
+          <rect x="330" y="20" width="530" height="58" rx="10" class="lyr-box lyr-accent"></rect>
+          <text x="346" y="44" class="lyr-title">Chrome / Firefox / Edge — the real qAcademy web app</text>
+          <text x="346" y="60" class="lyr-sub">localhost:8085, backed by the same H2 database as production</text>
+          <path d="M140,78 L140,120" class="lyr-line" marker-end="url(#arrowUi)"></path>
+          <path d="M140,178 L140,220" class="lyr-line" marker-end="url(#arrowUi)"></path>
+          <path d="M250,249 L330,249" class="lyr-line" marker-end="url(#arrowUi)"></path>
+          <path d="M560,249 L630,249" class="lyr-line" marker-end="url(#arrowUi)"></path>
+          <path d="M745,220 L745,178" class="lyr-line" marker-end="url(#arrowUi)"></path>
+          <path d="M250,49 L330,49" class="lyr-line" marker-end="url(#arrowUi)"></path>
+          <path d="M250,145 L330,145" class="lyr-line" marker-end="url(#arrowUi)"></path>
+        </svg>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2><span class="section-index" style="color:var(--accent)">04</span> UI Test Design Method</h2>
+        <span class="section-sub">How each case earns its place</span>
+      </div>
+      <div class="method-list">
+        <div class="method-item"><span class="n">01</span><div><h4>Equivalence Partitioning</h4><p>Every input — credentials, dates, emails, credit values — gets one representative from its valid class and one from its invalid class.</p></div></div>
+        <div class="method-item"><span class="n">02</span><div><h4>Boundary Value Analysis</h4><p>Course credits at 7 (past the backend's real cap of 6, but inside the form's own max of 12) and calendar-edge dates pin exact edges, not obviously-wrong values.</p></div></div>
+        <div class="method-item"><span class="n">03</span><div><h4>Negative &amp; Error-Path Testing</h4><p>Wrong password, an impossible date, an over-limit credit value — each confirms the system fails safely, with the right message, and no side effects.</p></div></div>
+        <div class="method-item"><span class="n">04</span><div><h4>Role-Based Access Control</h4><p>Admin, Staff, and Student each get a distinct permission matrix, checked as a UI affordance and, in the cross-layer cases, as a server rule too.</p></div></div>
+        <div class="method-item"><span class="n">05</span><div><h4>State-Transition Testing</h4><p>An enrollment's grade moves from "Ungraded" to a letter grade; a row moves from present to deleted — each transition is asserted on both sides.</p></div></div>
+        <div class="method-item"><span class="n">06</span><div><h4>Cross-Layer (Hybrid) Integration</h4><p>Data created in one layer is verified in the other, proving both layers share one true source of record.</p></div></div>
+      </div>
+    </section>
+
+    <section id="catalog-ui">
+      <div class="section-head">
+        <h2><span class="section-index" style="color:var(--accent)">05</span> UI Test Case Catalog</h2>
+        <span class="section-sub">16 cases across 5 modules</span>
+      </div>
+      <p class="lede">Filter by design technique, or scroll through by screen. Every case names the exact automated method it maps to.</p>
+      <div class="filterbar" data-filterbar="ui">
+        <button class="filter-btn" data-filter="all" aria-pressed="true">All (16)</button>
+        <button class="filter-btn" data-filter="positive" aria-pressed="false">Positive / Happy Path</button>
+        <button class="filter-btn" data-filter="negative" aria-pressed="false">Negative / Boundary</button>
+        <button class="filter-btn" data-filter="rbac" aria-pressed="false">RBAC / Security</button>
+        <button class="filter-btn" data-filter="crosslayer" aria-pressed="false">Cross-Layer</button>
+      </div>
+
+      <div class="module">
+        <div class="module-head"><h3>Login &amp; Authentication</h3><span class="badge-count">3 cases</span></div>
+        <p class="module-desc">Covers <span class="mono">LoginPage</span> — the single entry point every other screen sits behind.</p>
+
+        <div class="case" data-panelgroup="ui" data-tags="positive">
+          <div class="case-top"><div><span class="case-id case-id-ui">UI-LOGIN-01</span><h4>Valid admin login lands on the dashboard</h4><p class="scenario">A correct username/password pair authenticates and drops the user onto Home with their identity visible in the nav bar.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Open the app; enter the seeded Admin username and password.</li><li>Submit the sign-in form.</li></ol></div><div><div class="side-block expected">Home dashboard is visible; nav bar shows username <span class="mono">admin</span> and role <span class="mono">ADMIN</span>.</div><div class="side-block maps-to">Maps to: <span class="mono">login_withValidAdminCredentials_landsOnHomePage</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="ui" data-tags="negative">
+          <div class="case-top"><div><span class="case-id case-id-ui">UI-LOGIN-02</span><h4>Wrong password is rejected with a clear message</h4><p class="scenario">The correct username paired with an incorrect password must never authenticate, and must say why.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Enter the Admin username with a deliberately wrong password.</li><li>Submit the sign-in form.</li></ol></div><div><div class="side-block expected">Inline error reads exactly "Invalid username or password."; user stays on the login screen.</div><div class="side-block maps-to">Maps to: <span class="mono">login_withWrongPassword_showsInvalidCredentialsError</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="ui" data-tags="positive">
+          <div class="case-top"><div><span class="case-id case-id-ui">UI-LOGIN-03</span><h4>Demo-account chip signs in without typing</h4><p class="scenario">The login screen's quick-access chips must genuinely prefill and authenticate, not just cosmetically fill the fields.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Click the "Staff" demo-account chip.</li><li>Submit the pre-filled sign-in form.</li></ol></div><div><div class="side-block expected">Home dashboard loads; nav bar shows role <span class="mono">STAFF</span>.</div><div class="side-block maps-to">Maps to: <span class="mono">clickDemoUserChip_prefillsCredentials_andLogsIn</span></div></div></div>
+        </div>
+      </div>
+
+      <div class="module">
+        <div class="module-head"><h3>Student Roster</h3><span class="badge-count">3 cases</span></div>
+        <p class="module-desc">Covers <span class="mono">StudentsPage</span> — create, reject, and delete against the live roster table.</p>
+
+        <div class="case" data-panelgroup="ui" data-tags="positive">
+          <div class="case-top"><div><span class="case-id case-id-ui">UI-STU-01</span><h4>Adding a student with valid data creates a roster row</h4><p class="scenario">The core CRUD path: fill the form with a freshly-generated valid student, save, and confirm the row lands in the table.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Record the current row count.</li><li>Fill first name, last name, email, and DOB (DD/MM/YYYY) with a unique valid record.</li><li>Submit the form.</li></ol></div><div><div class="side-block expected">Row count increases by exactly one within the explicit-wait window.</div><div class="side-block maps-to">Maps to: <span class="mono">addStudent_withValidData_addsRow</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="ui" data-tags="negative">
+          <div class="case-top"><div><span class="case-id case-id-ui">UI-STU-02</span><h4>A calendar-impossible birth date is rejected, no row added</h4><p class="scenario">31 April doesn't exist. This pins the exact backend rule this same date once silently broke.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Fill the form with an otherwise-valid student, DOB = 31/04/2005.</li><li>Submit the form.</li></ol></div><div><div class="side-block expected">Inline error names the exact date and says it "is not a real calendar date"; row count is unchanged.</div><div class="side-block maps-to">Maps to: <span class="mono">addStudent_withInvalidDateOfBirth_showsCalendarErrorAndDoesNotAddRow</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="ui" data-tags="positive">
+          <div class="case-top"><div><span class="case-id case-id-ui">UI-STU-03</span><h4>Deleting a student removes their row</h4><p class="scenario">A student seeded directly via the API must still be visible and deletable from the roster — the two layers share one database.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Create a student via the API client directly.</li><li>Refresh the roster and confirm the new row is present.</li><li>Click delete and accept the native confirmation dialog.</li></ol></div><div><div class="side-block expected">Row is present before deletion and absent after, within the wait window.</div><div class="side-block maps-to">Maps to: <span class="mono">deleteStudent_removesRow</span></div></div></div>
+        </div>
+      </div>
+
+      <div class="module">
+        <div class="module-head"><h3>Course Catalog</h3><span class="badge-count">2 cases</span></div>
+        <p class="module-desc">Covers <span class="mono">CoursesPage</span> — Admin-only management, including a form-vs-backend limit gap.</p>
+
+        <div class="case" data-panelgroup="ui" data-tags="positive">
+          <div class="case-top"><div><span class="case-id case-id-ui">UI-CRS-01</span><h4>Adding a course with valid data creates a catalog row</h4><p class="scenario">The Admin happy path for course creation.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Record the current row count.</li><li>Fill a unique course name and a valid credit value.</li><li>Submit the form.</li></ol></div><div><div class="side-block expected">Row count increases by exactly one within the explicit-wait window.</div><div class="side-block maps-to">Maps to: <span class="mono">addCourse_withValidData_addsRow</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="ui" data-tags="negative">
+          <div class="case-top"><div><span class="case-id case-id-ui">UI-CRS-02</span><h4>Credits above the backend's real limit are rejected server-side</h4><p class="scenario">A documented gap: the form's own <span class="mono">max="12"</span> lets 7 credits through, but the backend caps at 6.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Fill a valid course name with 7 credits — inside the form's limit, outside the backend's.</li><li>Submit the form.</li></ol></div><div><div class="side-block expected">Inline error reads "credits must be between 1 and 6."; row count is unchanged.</div><div class="side-block maps-to">Maps to: <span class="mono">addCourse_withCreditsAboveBackendLimit_showsMismatchErrorAndDoesNotAddRow</span></div></div></div>
+        </div>
+      </div>
+
+      <div class="module">
+        <div class="module-head"><h3>Enrollments</h3><span class="badge-count">3 cases</span></div>
+        <p class="module-desc">Covers <span class="mono">EnrollmentsPage</span> — the screen that joins Students and Courses, plus grade state.</p>
+
+        <div class="case" data-panelgroup="ui" data-tags="positive crosslayer">
+          <div class="case-top"><div><span class="case-id case-id-ui">UI-ENR-01</span><h4>Enrolling a student into a course creates an enrollment row</h4><p class="scenario">Student and course prerequisites are seeded via the API for real, stable numeric IDs; the enrollment itself is created through the UI's own dropdowns.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Seed one student and one course via the API.</li><li>Open Enrollments; select both by their real IDs.</li><li>Submit the enrollment form.</li></ol></div><div><div class="side-block expected">Enrollment row count increases by exactly one.</div><div class="side-block maps-to">Maps to: <span class="mono">enrollStudent_withValidStudentAndCourse_addRow</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="ui" data-tags="positive">
+          <div class="case-top"><div><span class="case-id case-id-ui">UI-ENR-02</span><h4>Setting a grade updates the badge from Ungraded</h4><p class="scenario">A state transition: every new enrollment starts "Ungraded" until a grade is explicitly set.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Seed a student, course, and enrollment via the API.</li><li>Confirm the grade badge reads "Ungraded".</li><li>Enter grade "A" and save.</li></ol></div><div><div class="side-block expected">Badge updates from "Ungraded" to "A" within the wait window.</div><div class="side-block maps-to">Maps to: <span class="mono">setGrade_updatesGradeBadge</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="ui" data-tags="positive">
+          <div class="case-top"><div><span class="case-id case-id-ui">UI-ENR-03</span><h4>Deleting an enrollment removes its row</h4><p class="scenario">Admin-only teardown of an enrollment record.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Seed a student, course, and enrollment via the API.</li><li>Confirm the row is present, then delete it.</li></ol></div><div><div class="side-block expected">Row is present before deletion and absent after.</div><div class="side-block maps-to">Maps to: <span class="mono">deleteEnrollment_removesRow</span></div></div></div>
+        </div>
+      </div>
+
+      <div class="module">
+        <div class="module-head"><h3>Cross-Layer Flows</h3><span class="badge-count">5 cases</span></div>
+        <p class="module-desc">Covers <span class="mono">CrossLayerFlowTest</span> — scenarios that deliberately cross the UI/API boundary to prove the two layers agree.</p>
+
+        <div class="case" data-panelgroup="ui" data-tags="rbac crosslayer">
+          <div class="case-top"><div><span class="case-id case-id-ui">E2E-01</span><h4>A newly self-registered Staff account can manage Students but not Courses</h4><p class="scenario">Registration, login, and RBAC checked together, at both layers.</p></div><span class="tag tag-rbac">RBAC</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Self-register a brand-new Staff account through the UI.</li><li>Log in; confirm the add-student form is visible.</li><li>Navigate to Courses; confirm the add-course form is hidden.</li><li>Send the same course-create request directly to the API with that account's token.</li></ol></div><div><div class="side-block expected">UI shows write access to Students, read-only to Courses; the direct API call independently returns 403.</div><div class="side-block maps-to">Maps to: <span class="mono">e2e01_newlyRegisteredStaff_canManageStudentsButNotCourses</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="ui" data-tags="crosslayer">
+          <div class="case-top"><div><span class="case-id case-id-ui">E2E-02</span><h4>A student created via the API appears in the UI roster</h4><p class="scenario">Proves there is one source of truth: data written through the raw API must be readable through the UI.</p></div><span class="tag tag-crosslayer">Cross-Layer</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Create a student directly via the API.</li><li>Log into the UI as Admin and open the Students roster.</li></ol></div><div><div class="side-block expected">The API-created student's row is present in the UI table.</div><div class="side-block maps-to">Maps to: <span class="mono">e2e02_studentCreatedViaApi_appearsInUiRosterOnNextLoad</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="ui" data-tags="crosslayer">
+          <div class="case-top"><div><span class="case-id case-id-ui">E2E-03</span><h4>A grade stays Ungraded until Admin sets it via the API</h4><p class="scenario">A full role-swapping workflow: Admin creates via UI, Staff enrolls via UI, only Admin's API call moves the grade.</p></div><span class="tag tag-crosslayer">Cross-Layer</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>As Admin, add a student and a course through the UI.</li><li>Log out; log in as Staff and enroll them through the UI.</li><li>Confirm the grade badge reads "Ungraded".</li><li>As Admin, set the grade directly via the API.</li><li>Refresh the Staff session's Enrollments page.</li></ol></div><div><div class="side-block expected">Grade badge updates to the API-set value after the refresh.</div><div class="side-block maps-to">Maps to: <span class="mono">e2e03_enrollmentGrade_staysUngradedUntilAdminSetsItViaApi</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="ui" data-tags="crosslayer">
+          <div class="case-top"><div><span class="case-id case-id-ui">E2E-04</span><h4>Deleting a student via the UI cascades to their enrollments</h4><p class="scenario">A referential-integrity requirement (NFR-05): no orphaned enrollment records after a delete.</p></div><span class="tag tag-crosslayer">Cross-Layer</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Seed a student, a course, and an enrollment between them via the API.</li><li>Delete the student through the UI.</li><li>Query the API for that student's enrollments.</li></ol></div><div><div class="side-block expected">Roster row disappears; the API reports zero remaining enrollments for that student.</div><div class="side-block maps-to">Maps to: <span class="mono">e2e04_deletingStudentViaUi_cascadesToDeleteTheirEnrollments</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="ui" data-tags="rbac crosslayer">
+          <div class="case-top"><div><span class="case-id case-id-ui">E2E-05</span><h4>The server rejects an unauthorized write even though the UI never renders the button</h4><p class="scenario">Confirms hiding a control is a UI convenience, not the actual security boundary.</p></div><span class="tag tag-rbac">RBAC</span></div>
+          <div class="case-body"><div><h5>Steps</h5><ol class="steps"><li>Log in as Student; confirm the add-course form is absent.</li><li>Send a course-create request directly to the API using the Student's own valid token.</li><li>Repeat with no token at all.</li></ol></div><div><div class="side-block expected">UI never renders the form; both direct API calls independently return 403.</div><div class="side-block maps-to">Maps to: <span class="mono">e2e05_serverRejectsUnauthorizedWrite_evenThoughUiNeverRenderedTheButton</span></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2><span class="section-index" style="color:var(--accent)">06</span> Defects the UI Suite Caught</h2>
+        <span class="section-sub">Evidence the design earns its keep</span>
+      </div>
+      <div class="defect">
+        <div class="defect-head"><h4>Valid birth dates were rejected by the server</h4><span class="defect-tag">found via UI-STU-01 / UI-STU-02</span></div>
+        <div class="defect-flow">
+          <div class="defect-step"><b>Symptom</b>Adding a student with a perfectly ordinary date of birth failed with "not a real calendar date" — every time, for every date.</div>
+          <div class="defect-step"><b>Root cause</b>The backend's date parser used the pattern letter for "year-of-era" instead of "year", which Java's strict date parser can't resolve without an explicit era.</div>
+          <div class="defect-step"><b>Fix</b>Corrected the pattern in both validators; re-verified against real leap-year and impossible-date edge cases.</div>
+        </div>
+      </div>
+      <div class="defect">
+        <div class="defect-head"><h4>Newly created students/courses were invisible on the Enrollments screen</h4><span class="defect-tag">found via UI-ENR-01</span></div>
+        <div class="defect-flow">
+          <div class="defect-step"><b>Symptom</b>A student seeded moments earlier couldn't be selected in the enrollment form's dropdown.</div>
+          <div class="defect-step"><b>Root cause</b>The Enrollments screen reused an in-memory cache of the student/course lists first populated by the Home dashboard.</div>
+          <div class="defect-step"><b>Fix</b>Enrollments now always fetches current data, matching every other screen.</div>
+        </div>
+      </div>
+      <div class="defect">
+        <div class="defect-head"><h4>"Reopening" a page you're already on silently did nothing</h4><span class="defect-tag">found via UI-STU-03</span></div>
+        <div class="defect-flow">
+          <div class="defect-step"><b>Symptom</b>A student created via the API right before the roster was reopened still didn't appear.</div>
+          <div class="defect-step"><b>Root cause</b>The app routes by URL hash; clicking a nav link to the route you're already on never changes the hash, so the router's <span class="mono">hashchange</span> listener never re-fires.</div>
+          <div class="defect-step"><b>Fix</b>The test now forces a real browser refresh instead of a same-route navigation click.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- =====================  API PANEL  ====================== -->
+  <!-- ======================================================= -->
+  <div class="surface-panel" data-panel="api" hidden>
+
+    <section>
+      <div class="section-head">
+        <h2><span class="section-index" style="color:var(--api)">02</span> API Testing Strategy</h2>
+        <span class="section-sub">Architecture &amp; execution model</span>
+      </div>
+      <p class="lede">The API suite talks HTTP directly to qAcademy's REST layer with RestAssured — no browser involved — so it can reach validation rules and role rules the UI never lets a person trigger by accident, and pin the exact shape of every response, not just its status code.</p>
+      <div class="strategy-grid">
+        <div class="strategy-card">
+          <h3><span class="ic ic-api">▤</span>API Client Object Model</h3>
+          <p>One class per resource — <code>AuthApiClient</code>, <code>StudentApiClient</code>, <code>CourseApiClient</code>, <code>EnrollmentApiClient</code> — mirrors the UI's Page Object Model: a test reads as <code>studentApiClient.createStudent(...)</code>, never as an inline RestAssured chain.</p>
+        </div>
+        <div class="strategy-card">
+          <h3><span class="ic ic-api">⎘</span>One shared request spec</h3>
+          <p><code>RequestSpecFactory</code> builds a single RestAssured <code>RequestSpecification</code> — base URI, JSON content type, request/response logging — once. Every client asks this factory instead of repeating <code>given().baseUri()...</code> in every method.</p>
+        </div>
+        <div class="strategy-card">
+          <h3><span class="ic ic-api">◈</span>Typed, immutable payloads</h3>
+          <p>Request and response bodies are Java records (<code>StudentCreateRequest</code>, <code>CourseResponse</code>…), so a payload is built and read with compile-time-checked fields instead of loose JSON-path strings scattered through the tests.</p>
+        </div>
+        <div class="strategy-card">
+          <h3><span class="ic ic-api">🔑</span>Token-based RBAC verification</h3>
+          <p>Every protected client method takes a bearer token. Tests fetch real JWTs for Admin, Staff, and Student through the same login endpoint under test, then assert the exact status each role must receive.</p>
+        </div>
+        <div class="strategy-card">
+          <h3><span class="ic ic-api">▧</span>Response-shape contract testing</h3>
+          <p>qAcademy deliberately returns three different error shapes: a raw JSON array of strings from field validators, a <code>{"message": "..."}</code> object from service-layer failures, and an empty body from a 404. Tests assert the exact shape, not only the status code.</p>
+        </div>
+        <div class="strategy-card">
+          <h3><span class="ic ic-api">⟲</span>Shared infrastructure</h3>
+          <p>The same <code>TestDataFactory</code>, <code>ExtentReports</code> pipeline, <code>RetryAnalyzer</code>, and TestNG suite files back the API lane too — see <a href="#" data-goto-shared>Shared Foundation</a> above.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2><span class="section-index" style="color:var(--api)">03</span> Framework Layers</h2>
+        <span class="section-sub">Who calls whom</span>
+      </div>
+      <div class="arch">
+        <svg viewBox="0 0 980 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Layered diagram: Test classes call API Clients, which call BaseApiClient, which calls RequestSpecFactory, reading config.properties, hitting the real REST endpoints, and reporting through the TestNG listener into ExtentReports.">
+          <defs><marker id="arrowApi" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink-faint)"></path></marker></defs>
+          <rect x="30" y="20" width="220" height="58" rx="10" class="lyr-box lyr-accent-api"></rect>
+          <text x="46" y="44" class="lyr-title">Test Classes</text>
+          <text x="46" y="60" class="lyr-sub">AuthApiTest, StudentApiTest…</text>
+          <rect x="30" y="120" width="220" height="58" rx="10" class="lyr-box"></rect>
+          <text x="46" y="144" class="lyr-title">API Clients</text>
+          <text x="46" y="160" class="lyr-sub">StudentApiClient, CourseApiClient…</text>
+          <rect x="30" y="220" width="220" height="58" rx="10" class="lyr-box"></rect>
+          <text x="46" y="244" class="lyr-title">BaseApiClient</text>
+          <text x="46" y="260" class="lyr-sub">get · post · put · delete</text>
+          <rect x="330" y="220" width="230" height="58" rx="10" class="lyr-box"></rect>
+          <text x="346" y="244" class="lyr-title">RequestSpecFactory</text>
+          <text x="346" y="260" class="lyr-sub">baseURI · JSON · log filters</text>
+          <rect x="630" y="220" width="230" height="58" rx="10" class="lyr-box"></rect>
+          <text x="646" y="244" class="lyr-title">ConfigManager</text>
+          <text x="646" y="260" class="lyr-sub">reads config.properties</text>
+          <rect x="330" y="120" width="230" height="58" rx="10" class="lyr-box"></rect>
+          <text x="346" y="144" class="lyr-title">TestNG Listener</text>
+          <text x="346" y="160" class="lyr-sub">pass / fail logging</text>
+          <rect x="630" y="120" width="230" height="58" rx="10" class="lyr-box"></rect>
+          <text x="646" y="144" class="lyr-title">ExtentReports</text>
+          <text x="646" y="160" class="lyr-sub">test-output/ExtentReport.html</text>
+          <rect x="330" y="20" width="530" height="58" rx="10" class="lyr-box lyr-accent-api"></rect>
+          <text x="346" y="44" class="lyr-title">/api/auth · /api/student · /api/course · /api/enrollment</text>
+          <text x="346" y="60" class="lyr-sub">localhost:8085, the same Spring Boot service the UI runs on</text>
+          <path d="M140,78 L140,120" class="lyr-line" marker-end="url(#arrowApi)"></path>
+          <path d="M140,178 L140,220" class="lyr-line" marker-end="url(#arrowApi)"></path>
+          <path d="M250,249 L330,249" class="lyr-line" marker-end="url(#arrowApi)"></path>
+          <path d="M560,249 L630,249" class="lyr-line" marker-end="url(#arrowApi)"></path>
+          <path d="M745,220 L745,178" class="lyr-line" marker-end="url(#arrowApi)"></path>
+          <path d="M250,49 L330,49" class="lyr-line" marker-end="url(#arrowApi)"></path>
+          <path d="M250,145 L330,145" class="lyr-line" marker-end="url(#arrowApi)"></path>
+        </svg>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2><span class="section-index" style="color:var(--api)">04</span> API Test Design Method</h2>
+        <span class="section-sub">How each case earns its place</span>
+      </div>
+      <div class="method-list">
+        <div class="method-item"><span class="n">01</span><div><h4>Equivalence Partitioning</h4><p>Every field — password length, role name, email shape, credit value — gets one representative from its valid class and one from its invalid class.</p></div></div>
+        <div class="method-item"><span class="n">02</span><div><h4>Boundary Value Analysis</h4><p>Credits at exactly 0, exactly 6 (the real cap), and exactly 7 (one past it) pin the precise edge the validator enforces.</p></div></div>
+        <div class="method-item"><span class="n">03</span><div><h4>Authorization Matrix Testing</h4><p>Every write endpoint is called with an Admin token, a Staff token, and a Student token in turn, asserting the exact status (201 or 403) each role must get — including asymmetries, like Staff being allowed to create a Student but not a Course.</p></div></div>
+        <div class="method-item"><span class="n">04</span><div><h4>Non-Existent-Resource Testing</h4><p>IDs like <code>999999999</code> probe delete/update endpoints for the correct 400 vs 404 behavior depending on whether the resource is a foreign key or the target itself.</p></div></div>
+        <div class="method-item"><span class="n">05</span><div><h4>Response-Contract Testing</h4><p>The exact JSON shape is asserted, not just the status code — a validator failure's raw string array, a service failure's <code>{"message":...}</code> object, and a 404's genuinely empty body are three different contracts, each pinned separately.</p></div></div>
+        <div class="method-item"><span class="n">06</span><div><h4>State &amp; Field-Level Verification</h4><p>A newly created enrollment must carry a null grade; a grade only moves via its own PUT endpoint — verified as an explicit assertion, not assumed.</p></div></div>
+      </div>
+    </section>
+
+    <section id="catalog-api">
+      <div class="section-head">
+        <h2><span class="section-index" style="color:var(--api)">05</span> API Test Case Catalog</h2>
+        <span class="section-sub">32 cases across 4 resource groups</span>
+      </div>
+      <p class="lede">Filter by design technique, or scroll through by resource. Every case shows the endpoint it targets and the exact automated method it maps to.</p>
+      <div class="filterbar" data-filterbar="api">
+        <button class="filter-btn" data-filter="all" aria-pressed="true">All (32)</button>
+        <button class="filter-btn" data-filter="positive" aria-pressed="false">Positive / Happy Path</button>
+        <button class="filter-btn" data-filter="negative" aria-pressed="false">Negative / Boundary</button>
+        <button class="filter-btn" data-filter="rbac" aria-pressed="false">RBAC / Security</button>
+        <button class="filter-btn" data-filter="contract" aria-pressed="false">Response Contract</button>
+      </div>
+
+      <div class="module">
+        <div class="module-head"><h3>Authentication</h3><span class="badge-count">7 cases</span></div>
+        <p class="module-desc">Covers <span class="mono">/api/auth/register</span> and <span class="mono">/api/auth/login</span> via <span class="mono">AuthApiTest</span>.</p>
+
+        <div class="case" data-panelgroup="api" data-tags="positive">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/auth/register</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-AUTH-01</span><h4>Valid registration creates a new user</h4><p class="scenario">A brand-new username with a valid password and role succeeds.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">Unique username, password "Password1!", role "Student".</p></div><div><div class="side-block expected api-flavor">200 with <span class="mono">{"message":"User created successfully"}</span>.</div><div class="side-block maps-to">Maps to: <span class="mono">register_withValidData_createsUser</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="positive">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/auth/register</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-AUTH-02</span><h4>Role matching is case-insensitive</h4><p class="scenario">Lowercase "student" must succeed exactly like "Student" — the service uppercases before matching the enum.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">Unique username, valid password, role "student" (lowercase).</p></div><div><div class="side-block expected api-flavor">200 — registration succeeds despite the lowercase role.</div><div class="side-block maps-to">Maps to: <span class="mono">register_isCaseInsensitiveOnRole</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative contract">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/auth/register</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-AUTH-03</span><h4>A too-short password is rejected with the exact message</h4><p class="scenario">Passwords under 8 characters must fail validation with one precise message.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">Password "short" (5 characters).</p></div><div><div class="side-block expected api-flavor">400 with the raw array <span class="mono">["password must be at least 8 characters."]</span>.</div><div class="side-block maps-to">Maps to: <span class="mono">register_withShortPassword_returns_400_withValidationArray</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative contract">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/auth/register</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-AUTH-04</span><h4>An unrecognized role is rejected with the exact message</h4><p class="scenario">Only Admin, Staff, or Student are valid roles at registration.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">Valid username/password, role "SuperAdmin".</p></div><div><div class="side-block expected api-flavor">400 with the raw array <span class="mono">["role must be Admin, Staff, or Student."]</span>.</div><div class="side-block maps-to">Maps to: <span class="mono">register_withShortPassword_returns_400_withInValidationArray</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="positive">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/auth/login</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-AUTH-05</span><h4>Valid credentials return a token and expiry</h4><p class="scenario">The seeded Admin account logs in and receives a usable JWT.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">Admin username and password.</p></div><div><div class="side-block expected api-flavor">200 with non-null <span class="mono">token</span> and <span class="mono">expiresAtUtc</span> fields.</div><div class="side-block maps-to">Maps to: <span class="mono">login_withValidCredentials_returnsTokentAndExpiry</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/auth/login</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-AUTH-06</span><h4>A wrong password returns 401</h4><p class="scenario">The correct username with an incorrect password must be rejected.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">Admin username, wrong password.</p></div><div><div class="side-block expected api-flavor">401 with <span class="mono">{"message":"Invalid username or password"}</span>.</div><div class="side-block maps-to">Maps to: <span class="mono">login_withWrongPassword_returns_401</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative contract">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/auth/login</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-AUTH-07</span><h4>An unknown username returns the same message as a wrong password</h4><p class="scenario">Security-by-design: the API must never reveal whether the username or the password was the wrong part.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">A username that has never been registered.</p></div><div><div class="side-block expected api-flavor">401 with the identical <span class="mono">"Invalid username or password"</span> message used for a wrong password.</div><div class="side-block maps-to">Maps to: <span class="mono">login_withUnknownUsername_returnsSameMessageAsWrongPassword</span></div></div></div>
+        </div>
+      </div>
+
+      <div class="module">
+        <div class="module-head"><h3>Student Management</h3><span class="badge-count">10 cases</span></div>
+        <p class="module-desc">Covers <span class="mono">/api/student</span> via <span class="mono">StudentApiTest</span> — Admin or Staff may create, Admin-only may delete.</p>
+
+        <div class="case" data-panelgroup="api" data-tags="positive">
+          <div class="endpoint-line"><span class="verb verb-get">GET</span>/api/student</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-STU-01</span><h4>The roster is readable without authentication</h4><p class="scenario">Read access is intentionally open to everyone.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">No token.</p></div><div><div class="side-block expected api-flavor">200 with a non-empty array (Ada Lovelace is seeded on a fresh DB).</div><div class="side-block maps-to">Maps to: <span class="mono">getAllStudents_isOpenAndReturnsSeedData</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="positive">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/student</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-STU-02</span><h4>Admin can create a student</h4><p class="scenario">The core create path for the resource that anchors the whole schema.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">A fresh valid student, Admin token.</p></div><div><div class="side-block expected api-flavor">201 with a non-null <span class="mono">id</span> and the submitted email echoed back.</div><div class="side-block maps-to">Maps to: <span class="mono">createStudent_asAdmin_returns201</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="positive rbac">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/student</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-STU-03</span><h4>Staff can also create a student</h4><p class="scenario">Confirms the deliberate asymmetry: Staff can create students (unlike Courses, which are Admin-only).</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">A fresh valid student, Staff token.</p></div><div><div class="side-block expected api-flavor">201.</div><div class="side-block maps-to">Maps to: <span class="mono">createStudent_asStaff_returns201</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="rbac">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/student</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-STU-04</span><h4>Student role cannot create a student</h4><p class="scenario">Confirms the write boundary of the least-privileged role.</p></div><span class="tag tag-rbac">RBAC</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">A fresh valid student, Student token.</p></div><div><div class="side-block expected api-flavor">403.</div><div class="side-block maps-to">Maps to: <span class="mono">createStudent_asStudentRole_isForbidden</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative contract">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/student</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-STU-05</span><h4>A blank first name returns exactly one validation message</h4><p class="scenario">This is exactly the case the UI form's native <span class="mono">required</span> attribute blocks before it ever reaches the server — only the raw API can exercise it.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">firstName = "" ; everything else valid.</p></div><div><div class="side-block expected api-flavor">400 with exactly <span class="mono">["firstName is required."]</span> — no other message mixed in.</div><div class="side-block maps-to">Maps to: <span class="mono">createStudent_withBlankFirstName_returns_400_WithSingleValidationMessage</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative contract">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/student</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-STU-06</span><h4>An invalid email returns exactly one validation message</h4><p class="scenario">The form's <span class="mono">type="email"</span> blocks this natively — only the API can exercise the server's own regex.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">email = "not-an-email" ; everything else valid.</p></div><div><div class="side-block expected api-flavor">400 with exactly <span class="mono">["email must be a valid email address."]</span>.</div><div class="side-block maps-to">Maps to: <span class="mono">createStudent_withInvalidEmail_returns400WithSingleValidationMessage</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative contract">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/student</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-STU-07</span><h4>A calendar-impossible date returns the exact calendar-error message</h4><p class="scenario">31 April doesn't exist — this is the precise case that caught a real strict-date-parsing defect in the backend during this project (see the case study below).</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">dateOfBirth = "31/04/2005" ; everything else valid.</p></div><div><div class="side-block expected api-flavor">400 naming the exact date and stating it "is not a real calendar date - check the day and month aren't swapped."</div><div class="side-block maps-to">Maps to: <span class="mono">createStudent_withInvalidDateOfBirth_returns_400_WithCalendarErrorMessage</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="rbac">
+          <div class="endpoint-line"><span class="verb verb-delete">DELETE</span>/api/student/{id}</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-STU-08</span><h4>Staff cannot delete a student</h4><p class="scenario">Delete is stricter than create: Staff could create the student above, but cannot remove one.</p></div><span class="tag tag-rbac">RBAC</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">A freshly-seeded student's id, Staff token.</p></div><div><div class="side-block expected api-flavor">403.</div><div class="side-block maps-to">Maps to: <span class="mono">deleteStudent_asStaff_isForbidden</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="positive">
+          <div class="endpoint-line"><span class="verb verb-delete">DELETE</span>/api/student/{id}</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-STU-09</span><h4>Admin can delete a student</h4><p class="scenario">The Admin-only teardown path.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">A freshly-seeded student's id, Admin token.</p></div><div><div class="side-block expected api-flavor">204 No Content.</div><div class="side-block maps-to">Maps to: <span class="mono">deleteStudent_asAdmin_removesStudent</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative contract">
+          <div class="endpoint-line"><span class="verb verb-delete">DELETE</span>/api/student/{id}</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-STU-10</span><h4>Deleting a non-existent id returns 404 with a genuinely empty body</h4><p class="scenario">Distinguishes a "not found" (empty body) from a validation failure (a JSON array) — two different response contracts for two different failure kinds.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">id = 999999999, Admin token.</p></div><div><div class="side-block expected api-flavor">404 with a completely empty response body.</div><div class="side-block maps-to">Maps to: <span class="mono">deleteStudent_withNonExistentId_returns_404_WithEmptyBody</span></div></div></div>
+        </div>
+      </div>
+
+      <div class="module">
+        <div class="module-head"><h3>Course Management</h3><span class="badge-count">5 cases</span></div>
+        <p class="module-desc">Covers <span class="mono">/api/course</span> via <span class="mono">CourseApiTest</span> — Admin-only writes, no delete route at all.</p>
+
+        <div class="case" data-panelgroup="api" data-tags="positive">
+          <div class="endpoint-line"><span class="verb verb-get">GET</span>/api/course</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-CRS-01</span><h4>The catalog is readable without authentication</h4><p class="scenario">Read access is open, same as Students.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">No token.</p></div><div><div class="side-block expected api-flavor">200 with a non-empty array (Algebra I / US History seeded on a fresh DB).</div><div class="side-block maps-to">Maps to: <span class="mono">getAllCourses_isOpenAndReturnsSeedData</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="positive">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/course</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-CRS-02</span><h4>Admin can create a course</h4><p class="scenario">The core create path.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">A fresh valid course, Admin token.</p></div><div><div class="side-block expected api-flavor">201 with a non-null <span class="mono">id</span>.</div><div class="side-block maps-to">Maps to: <span class="mono">createCourse_asAdmin_returns201</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="rbac">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/course</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-CRS-03</span><h4>Staff cannot create a course</h4><p class="scenario">Unlike Student creation, there's no "Admin OR Staff" rule here — Courses are Admin-only, and this is the case that proves it.</p></div><span class="tag tag-rbac">RBAC</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">A fresh valid course, Staff token.</p></div><div><div class="side-block expected api-flavor">403.</div><div class="side-block maps-to">Maps to: <span class="mono">createCourse_asStaff_isForbidden</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/course</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-CRS-04</span><h4>Credits below the minimum are rejected</h4><p class="scenario">0 credits can't even be reached through the UI, whose number input has <span class="mono">min="1"</span> — only the raw API reaches this branch of the validator.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">credits = 0, Admin token.</p></div><div><div class="side-block expected api-flavor">400 with <span class="mono">["credits must be between 1 and 6."]</span>.</div><div class="side-block maps-to">Maps to: <span class="mono">createCourse_withCreditsBelowMinimum_returns400</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/course</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-CRS-05</span><h4>Credits above the real limit are rejected — the API-level proof of the UI/backend gap</h4><p class="scenario">7 credits passes the form's own <span class="mono">max="12"</span> but fails here; this is the server-side half of the same known gap documented in the UI catalog.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">credits = 7, Admin token.</p></div><div><div class="side-block expected api-flavor">400 with <span class="mono">["credits must be between 1 and 6."]</span>.</div><div class="side-block maps-to">Maps to: <span class="mono">createCourse_withCreditsAboveBackendLimit_returns400</span></div></div></div>
+        </div>
+      </div>
+
+      <div class="module">
+        <div class="module-head"><h3>Enrollment Management</h3><span class="badge-count">10 cases</span></div>
+        <p class="module-desc">Covers <span class="mono">/api/enrollment</span> via <span class="mono">EnrollmentApiTest</span> — the join resource between Students and Courses, plus grading.</p>
+
+        <div class="case" data-panelgroup="api" data-tags="positive">
+          <div class="endpoint-line"><span class="verb verb-get">GET</span>/api/enrollment</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-ENR-01</span><h4>Enrollments are readable without authentication</h4><p class="scenario">Read access is open, same as the other two resources.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">No token.</p></div><div><div class="side-block expected api-flavor">200.</div><div class="side-block maps-to">Maps to: <span class="mono">getAllEnrollments_isOpen</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="positive">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/enrollment</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-ENR-02</span><h4>Staff can create an enrollment, with no grade yet</h4><p class="scenario">Confirms both the create permission and the field-level rule that grade is never set at creation time.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">The seeded student/course ids, Staff token.</p></div><div><div class="side-block expected api-flavor">201 with a non-null <span class="mono">id</span> and a null <span class="mono">grade</span>.</div><div class="side-block maps-to">Maps to: <span class="mono">createEnrollment_asStaff_returns201WithNoGradeYet</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="rbac">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/enrollment</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-ENR-03</span><h4>Student role cannot create an enrollment</h4><p class="scenario">Enrollment write access matches Student creation's Admin-or-Staff rule.</p></div><span class="tag tag-rbac">RBAC</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">The seeded student/course ids, Student token.</p></div><div><div class="side-block expected api-flavor">403.</div><div class="side-block maps-to">Maps to: <span class="mono">createEnrollment_asStudentRole_isForbidden</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative contract">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/enrollment</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-ENR-04</span><h4>A non-existent student id fails with a message object, not an array</h4><p class="scenario">This failure happens in the service layer (checking the id exists), not the field validator — so it takes the other response shape on purpose.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">studentId = 999999999, a real courseId, Admin token.</p></div><div><div class="side-block expected api-flavor">400 with <span class="mono">{"message":"Student not found"}</span> — an object, not an array.</div><div class="side-block maps-to">Maps to: <span class="mono">createEnrollment_withNonExistentStudentId_returns400WithMessageObject</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative contract">
+          <div class="endpoint-line"><span class="verb verb-post">POST</span>/api/enrollment</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-ENR-05</span><h4>A non-existent course id fails with a message object, not an array</h4><p class="scenario">The mirror image of the previous case, on the other foreign key.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">A real studentId, courseId = 999999999, Admin token.</p></div><div><div class="side-block expected api-flavor">400 with <span class="mono">{"message":"Course not found"}</span>.</div><div class="side-block maps-to">Maps to: <span class="mono">createEnrollment_withNonExistentCourseId_returns400WithMessageObject</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="positive">
+          <div class="endpoint-line"><span class="verb verb-put">PUT</span>/api/enrollment/{id}</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-ENR-06</span><h4>A valid grade updates the enrollment</h4><p class="scenario">The state transition from Ungraded to a real letter grade.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">grade = "A", Admin token.</p></div><div><div class="side-block expected api-flavor">200 with <span class="mono">grade</span> now "A".</div><div class="side-block maps-to">Maps to: <span class="mono">updateGrade_withValidGrade_returns200</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative">
+          <div class="endpoint-line"><span class="verb verb-put">PUT</span>/api/enrollment/{id}</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-ENR-07</span><h4>A malformed grade is rejected with the exact format message</h4><p class="scenario">Grades must look like a real letter grade — one letter plus an optional +/-.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">grade = "A+-", Admin token.</p></div><div><div class="side-block expected api-flavor">400 with <span class="mono">["grade must be a letter grade like A, B+, or C- (max one letter plus an optional +/-)."]</span>.</div><div class="side-block maps-to">Maps to: <span class="mono">updateGrade_withInvalidFormat_returns400</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="negative contract">
+          <div class="endpoint-line"><span class="verb verb-put">PUT</span>/api/enrollment/{id}</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-ENR-08</span><h4>Grading a non-existent enrollment returns 404 with an empty body</h4><p class="scenario">Same not-found contract as the Student delete case, on a different resource.</p></div><span class="tag tag-negative">Negative</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">id = 999999999, grade = "A", Admin token.</p></div><div><div class="side-block expected api-flavor">404 with a completely empty response body.</div><div class="side-block maps-to">Maps to: <span class="mono">updateGrade_withNonExistentEnrollmentId_returns404WithEmptyBody</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="rbac">
+          <div class="endpoint-line"><span class="verb verb-delete">DELETE</span>/api/enrollment/{id}</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-ENR-09</span><h4>Staff cannot delete an enrollment</h4><p class="scenario">Delete is Admin-only, same pattern as Student delete.</p></div><span class="tag tag-rbac">RBAC</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">A freshly-seeded enrollment id, Staff token.</p></div><div><div class="side-block expected api-flavor">403.</div><div class="side-block maps-to">Maps to: <span class="mono">deleteEnrollment_asStaff_isForbidden</span></div></div></div>
+        </div>
+        <div class="case" data-panelgroup="api" data-tags="positive">
+          <div class="endpoint-line"><span class="verb verb-delete">DELETE</span>/api/enrollment/{id}</div>
+          <div class="case-top"><div><span class="case-id case-id-api">API-ENR-10</span><h4>Admin can delete an enrollment</h4><p class="scenario">The Admin-only teardown path.</p></div><span class="tag tag-positive">Positive</span></div>
+          <div class="case-body"><div><h5>Request</h5><p style="font-size:13px;color:var(--ink-soft);margin:0">A freshly-seeded enrollment id, Admin token.</p></div><div><div class="side-block expected api-flavor">204 No Content.</div><div class="side-block maps-to">Maps to: <span class="mono">deleteEnrollment_asAdmin_removesEnrollment</span></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2><span class="section-index" style="color:var(--api)">06</span> Defects the API Suite Caught</h2>
+        <span class="section-sub">Evidence the design earns its keep</span>
+      </div>
+      <div class="defect">
+        <div class="defect-head"><h4>Every student create failed validation — for a reason no UI test alone could pin down</h4><span class="defect-tag">found via API-STU-02 / API-STU-05 / API-STU-06</span></div>
+        <div class="defect-flow">
+          <div class="defect-step"><b>Symptom</b><span class="mono">createStudent_withBlankFirstName</span> expected one validation message but got two — an extra, unexplained "not a real calendar date" error rode along with every request, valid data included.</div>
+          <div class="defect-step"><b>Why the API test found it precisely</b>A UI test can only report "the row never appeared." Asserting the exact response body here surfaced the literal extra error message, which is what actually named the broken field.</div>
+          <div class="defect-step"><b>Fix</b>Traced to a one-character pattern bug in the backend's strict date parser, reproduced in isolation, and corrected — confirmed by re-running this exact case afterward.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <span>qAcademy Automation Framework — Test Blueprint</span>
+    <span>Selenium · RestAssured · TestNG · ExtentReports</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  // Surface tabs (UI vs API)
+  var tabs = document.querySelectorAll('.surface-tab');
+  var panels = document.querySelectorAll('.surface-panel');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.setAttribute('aria-selected', 'false'); });
+      tab.setAttribute('aria-selected', 'true');
+      var name = tab.getAttribute('data-tab');
+      panels.forEach(function(p){ p.hidden = p.getAttribute('data-panel') !== name; });
+    });
+  });
+
+  document.querySelectorAll('[data-goto-shared]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      tabs[0].click();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+
+  // Per-panel filter bars
+  document.querySelectorAll('.filterbar').forEach(function(bar){
+    var scope = bar.getAttribute('data-filterbar');
+    var buttons = bar.querySelectorAll('.filter-btn');
+    var cases = document.querySelectorAll('.case[data-panelgroup="' + scope + '"]');
+    buttons.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        buttons.forEach(function(b){ b.setAttribute('aria-pressed', 'false'); });
+        btn.setAttribute('aria-pressed', 'true');
+        var f = btn.getAttribute('data-filter');
+        cases.forEach(function(c){
+          var tagsAttr = (c.getAttribute('data-tags') || '').split(' ');
+          var show = (f === 'all') || tagsAttr.indexOf(f) !== -1;
+          c.hidden = !show;
+        });
+        document.querySelectorAll('#catalog-' + scope + ' .module').forEach(function(mod){
+          var visible = mod.querySelectorAll('.case:not([hidden])').length;
+          mod.style.display = visible === 0 ? 'none' : '';
+        });
+      });
+    });
+  });
+})();
+</script>

@@ -44,7 +44,7 @@ public class TestListener implements ITestListener {
 		// Only a UI test has a WebDriver to screenshot; for an API test this
 		// comes back null, which ScreenshotUtils already treats as expected.
 
-		String screenshotPath = ScreenshotUtils.captureScreensShot(testName);
+		String screenshotPath = ScreenshotUtils.captureScreenshot(testName);
 		if (screenshotPath != null) {
 			test.addScreenCaptureFromPath(screenshotPath);
 		}

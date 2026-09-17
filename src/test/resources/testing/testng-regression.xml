@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="qAcademy Regression Suite" verbose="1">
+
+    <!-- testng-smoke.xml is deliberately NOT included here - every method it hand-picks
+         is already fully covered by the ui/api/e2e suite-files below (it just picks one
+         method per class out of the SAME classes those already run in full). Including it
+         used to make the regression suite silently run those specific methods twice per
+         pass - once via smoke, once as part of the full class - which is exactly what was
+         producing duplicate "Run 1 / Run 2" results for the same test method in one run. -->
+    <suite-files>
+        <suite-file path="src/test/resources/testing/testng-ui.xml"/>
+        <suite-file path="src/test/resources/testing/testng-api.xml"/>
+        <suite-file path="src/test/resources/testing/testng-e2e.xml"/>
+    </suite-files>
+
+</suite>

@@ -35,7 +35,7 @@ public class StudentsPage extends BasePage {
 		return getText(formError);
 	}
 	public boolean isStudentRowPresent(String studentId) {
-		return isDisplayed(By.cssSelector("tr[data-id='" + studentId + "']"));
+		return isVisibleWithinWait(By.cssSelector("tr[data-id='" + studentId + "']"));
 	}
 	 /** Deletes a student and accepts the browser's native "This cannot be undone" confirm dialog. */
 	public void deleteStudent(String studentId) {
@@ -52,6 +52,6 @@ public class StudentsPage extends BasePage {
 	}
 	
 	public boolean isAddStudentFormDisplayed() {
-	    return isDisplayed(firstNameInput);
+	    return isVisibleWithinWait(firstNameInput);
 	}
 }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extentreports>
+    <configuration>
+        <!-- report theme: standard, dark -->
+        <theme>standard</theme>
+
+        <!-- document encoding - defaults to UTF-8 -->
+        <encoding>UTF-8</encoding>
+
+        <!-- protocol for script/stylesheet CDN links - defaults to https -->
+        <protocol>https</protocol>
+
+        <!-- title of the HTML document (browser tab) -->
+        <documentTitle>qAcademy Automation Report</documentTitle>
+
+        <!-- report name - displayed at top-nav -->
+        <reportName>qAcademy Test Execution Report</reportName>
+
+        <!-- location of the pass/fail chart in the test view: top, bottom -->
+        <testViewChartLocation>bottom</testViewChartLocation>
+
+        <!-- custom javascript - none needed yet -->
+        <scripts>
+            <![CDATA[
+            ]]>
+        </scripts>
+
+        <!-- custom styles - none needed yet -->
+        <styles>
+            <![CDATA[
+            ]]>
+        </styles>
+    </configuration>
+</extentreports>

@@ -39,7 +39,7 @@ public final class ScreenshotUtils {
      * a screenshot problem shouldn't mask the real test failure that triggered it.
      */
 	
-	public static String captureScreensShot(String testName) {
+	public static String captureScreenshot(String testName) {
 		try {
 			WebDriver driver = DriverManager.getDriver();
 			File source = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);

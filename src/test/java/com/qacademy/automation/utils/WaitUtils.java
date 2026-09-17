@@ -30,7 +30,7 @@ public final class WaitUtils {
 	}
 	
 	public static WebElement waitForVisible(WebDriver driver, By locator) {
-		return wait(driver).until(ExpectedConditions.visibilityOfElementLocated(null));
+		return wait(driver).until(ExpectedConditions.visibilityOfElementLocated(locator));
 	}
 	
 	public static WebElement waitForClickable(WebDriver driver, By locator) {

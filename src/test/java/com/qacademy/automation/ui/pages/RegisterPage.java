@@ -3,7 +3,6 @@ package com.qacademy.automation.ui.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * Page object for the register form - the same index.html page as LoginPage,
@@ -36,7 +35,7 @@ public class RegisterPage extends BasePage {
 	}
 
 	public boolean isSuccessDisplayed() {
-		return isDisplayed(successMessage);
+		return isVisibleWithinWait(successMessage);
 	}
 
 	public String getSuccessMessage() {
@@ -44,7 +43,7 @@ public class RegisterPage extends BasePage {
 	}
 
 	public boolean isErrorDisplayed() {
-		return isDisplayed(errorMessage);
+		return isVisibleWithinWait(errorMessage);
 	}
 
 	public String getErrorMessage() {

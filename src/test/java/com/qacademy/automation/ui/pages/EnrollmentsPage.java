@@ -40,7 +40,25 @@ public class EnrollmentsPage extends BasePage {
 	}
 
 	public boolean isEnrollmentRowPresent(String enrollmentId) {
-		return isDisplayed(By.cssSelector("tr[data-id='" + enrollmentId + "']"));
+		return isVisibleWithinWait(By.cssSelector("tr[data-id='" + enrollmentId + "']"));
+	}
+
+	/**
+	 * Waits for a row matching this exact student name + course name to appear anywhere
+	 * in the table.
+	 *
+	 * Deliberately identity-based rather than a row-count check: the "All enrollments"
+	 * table is never reset between suite runs (the H2 file persists), so it accumulates
+	 * every enrollment ever created by every past run - a plain "count went up by 1"
+	 * assertion has to race that ever-growing, shared list and is vulnerable to whatever
+	 * else happens to touch it. TestDataFactory gives every seeded student/course a
+	 * random suffix, so the pairing of names passed in here is guaranteed unique - this
+	 * only has to find its own row, regardless of how many others already exist.
+	 */
+	public boolean isEnrollmentPresentByNames(String studentFullName, String courseName) {
+		return isVisibleWithinWait(By.xpath(
+				"//table//tr[td[2][normalize-space()='" + studentFullName
+				+ "'] and td[3][normalize-space()='" + courseName + "']]"));
 	}
 
 	/** Deletes an enrollment and accepts the browser's native confirm dialog. */

@@ -48,7 +48,7 @@ public class LoginPage extends BasePage{
 	}
 	
 	public boolean isErrorDisplayed() {
-		return isDisplayed(errorMessage);
+		return isVisibleWithinWait(errorMessage);
 	}
 	
 	public RegisterPage goToRegister() {

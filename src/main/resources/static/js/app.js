@@ -690,9 +690,16 @@
     `;
 
     try {
+      // Always fetch fresh here, same as every other view - reusing cache.students/
+      // cache.courses when they're already set (e.g. from the Home dashboard's own
+      // load a moment earlier) meant a student or course created since then - via the
+      // API directly, or even just via another browser tab - wouldn't appear as an
+      // option in these dropdowns until something else happened to clear the cache
+      // (e.g. logging out). The enrollment list itself was never cached this way;
+      // the two dropdown sources shouldn't be treated differently.
       const [students, courses, enrollments] = await Promise.all([
-        cache.students || API.getStudents(),
-        cache.courses || API.getCourses(),
+        API.getStudents(),
+        API.getCourses(),
         API.getEnrollments(),
       ]);
       cache.students = students;

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="qAcademy Smoke Suite" verbose="1">
+
+    <listeners>
+        <listener class-name="com.qacademy.automation.listeners.TestListener"/>
+    </listeners>
+
+    <!--
+      One fast, high-value happy-path check per layer/module - "is the app fundamentally
+      alive", not coverage. Every negative/RBAC/edge case lives in the full suites instead.
+    -->
+    <test name="Smoke Tests">
+        <classes>
+            <class name="com.qacademy.automation.tests.ui.LoginPageTest">
+                <methods>
+                    <include name="login_withValidAdminCredentials_landsOnHomePage"/>
+                </methods>
+            </class>
+            <class name="com.qacademy.automation.tests.ui.StudentsPageTest">
+                <methods>
+                    <include name="addStudent_withValidData_addsRow"/>
+                </methods>
+            </class>
+            <class name="com.qacademy.automation.tests.ui.CoursesPageTest">
+                <methods>
+                    <include name="addCourse_withValidData_addsRow"/>
+                </methods>
+            </class>
+            <class name="com.qacademy.automation.tests.ui.EnrollmentsPageTest">
+                <methods>
+                    <include name="enrollStudent_withValidStudentAndCourse_addRow"/>
+                </methods>
+            </class>
+            <class name="com.qacademy.automation.tests.api.AuthApiTest">
+                <methods>
+                    <include name="login_withValidCredentials_returnsTokenAndExpiry"/>
+                </methods>
+            </class>
+            <class name="com.qacademy.automation.tests.api.StudentApiTest">
+                <methods>
+                    <include name="createStudent_asAdmin_returns201"/>
+                </methods>
+            </class>
+            <class name="com.qacademy.automation.tests.api.CourseApiTest">
+                <methods>
+                    <include name="createCourse_asAdmin_returns201"/>
+                </methods>
+            </class>
+            <class name="com.qacademy.automation.tests.api.EnrollmentApiTest">
+                <methods>
+                    <include name="createEnrollment_asStaff_returns201WithNoGradeYet"/>
+                </methods>
+            </class>
+            <class name="com.qacademy.automation.tests.e2e.CrossLayerFlowTest">
+                <methods>
+                    <include name="e2e02_studentCreatedViaApi_appearsInUiRosterOnNextLoad"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>

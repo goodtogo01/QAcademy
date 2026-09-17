@@ -17,7 +17,7 @@ public class HomePage extends BasePage {
 	 }
 	 
 	 public boolean isLoaded() {
-		 return isDisplayed(statGrid);
+		 return isVisibleWithinWait(statGrid);
 	 }
 
 	 public NavBarComponent navBar() {

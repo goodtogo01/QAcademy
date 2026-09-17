@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="qAcademy UI Suite" verbose="1">
+
+    <listeners>
+        <listener class-name="com.qacademy.automation.listeners.TestListener"/>
+    </listeners>
+
+    <test name="UI Tests">
+        <classes>
+            <class name="com.qacademy.automation.tests.ui.LoginPageTest"/>
+            <class name="com.qacademy.automation.tests.ui.StudentsPageTest"/>
+            <class name="com.qacademy.automation.tests.ui.CoursesPageTest"/>
+            <class name="com.qacademy.automation.tests.ui.EnrollmentsPageTest"/>
+        </classes>
+    </test>
+
+</suite>
