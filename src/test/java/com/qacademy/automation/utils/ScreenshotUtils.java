@@ -34,12 +34,21 @@ public final class ScreenshotUtils {
 	}
 	
 	 /**
-     * @return the absolute path of the saved screenshot, or null if capture failed.
-     * Capture failures are logged, not thrown.
-     * a screenshot problem shouldn't mask the real test failure that triggered it.
+     * @return the absolute path of the saved screenshot, or null if there was nothing to
+     * capture (an API test - no browser ever existed for this thread) or capture itself
+     * failed. Either way this only logs, it never throws - a screenshot problem, or the
+     * complete absence of a browser, must never mask the real test failure that triggered
+     * this call in the first place.
      */
 	
-	public static String captureScreenshot(String testName) {
+	public static String captureScreenshot(String testName) throws IllegalStateException {
+		if (!DriverManager.hasDriver()) {
+			// Expected for every API test failure - there's no browser on this thread to
+			// screenshot. Not a warning: this is the normal case for half the suite, not a
+			// capture problem, so it stays out of the log at anything above debug.
+			log.debug("No WebDriver for this thread - skipping screenshot for test '{}' (API test).", testName);
+			return null;
+		}
 		try {
 			WebDriver driver = DriverManager.getDriver();
 			File source = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
@@ -52,7 +61,10 @@ public final class ScreenshotUtils {
 			Files.copy(source.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
 			
 			return target.toAbsolutePath().toString();
-		}catch (IllegalStateException | IOException e) {
+		}catch (IOException | RuntimeException e) {
+			// RuntimeException also covers Selenium's own WebDriverException family (e.g. a
+			// session that died between the test failing and this hook running) - a broken
+			// screenshot attempt must never escape and take the real failure report down with it.
 			log.warn("Failed to capture screenshot for test '{}'", testName, e);
             return null;
 		}

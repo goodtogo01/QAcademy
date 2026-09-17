@@ -31,6 +31,16 @@ public final class DriverManager {
 		return driver;
 	}
 
+	/**
+	 * True if the current thread has a WebDriver set. Lets callers that run for both UI
+	 * and API tests (e.g. the failure-screenshot hook in TestListener) check first,
+	 * instead of relying on catching the IllegalStateException getDriver() throws for the
+	 * expected "this is an API test, there's no browser" case.
+	 */
+	public static boolean hasDriver() {
+		return DRIVER_THREAD_LOCAL.get() != null;
+	}
+
 	public static void setDriver(WebDriver driver) {
 		DRIVER_THREAD_LOCAL.set(driver);
 	}

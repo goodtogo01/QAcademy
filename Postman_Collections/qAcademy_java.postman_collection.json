@@ -1,0 +1,3883 @@
+{
+	"info": {
+		"_postman_id": "e4ea39bb-138b-477d-a31a-c69bc7b7acbb",
+		"name": "qAcademy_java",
+		"description": "qAcademy School Management System - full REST API coverage (Auth, Students, Courses, Enrollments) generated from the actual controllers/DTOs/validators in src/main/java/com/qacademy, mirroring the same scenarios the RestAssured suite in src/test covers. Run folder-by-folder top to bottom (Auth first) - later requests chain off variables earlier ones set (tokens, createdStudentId, createdCourseId, createdEnrollmentId, etc.).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "00 - Auth",
+			"item": [
+				{
+					"name": "Login - Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{adminUsername}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Seeded demo account (DataSeeder). Role: ADMIN."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has a token and expiresAtUtc\", function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json).to.have.property(\"token\");",
+									"    pm.expect(json).to.have.property(\"expiresAtUtc\");",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"pm.environment.set(\"adminToken\", json.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Login - Staff",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{staffUsername}}\",\n  \"password\": \"{{staffPassword}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Seeded demo account (DataSeeder). Role: STAFF."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has a token and expiresAtUtc\", function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json).to.have.property(\"token\");",
+									"    pm.expect(json).to.have.property(\"expiresAtUtc\");",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"pm.environment.set(\"staffToken\", json.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Login - Student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{studentUsername}}\",\n  \"password\": \"{{studentPassword}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Seeded demo account (DataSeeder). Role: STUDENT."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has a token and expiresAtUtc\", function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json).to.have.property(\"token\");",
+									"    pm.expect(json).to.have.property(\"expiresAtUtc\");",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"pm.environment.set(\"studentToken\", json.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Login - Invalid Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{adminUsername}}\",\n  \"password\": \"WrongPassword999!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "AuthController returns the same message for a wrong password as for an unknown username - it must never reveal which one was wrong."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Body has a generic invalid-credentials message\", function () {",
+									"    pm.expect(pm.response.json().message).to.eql(\"Invalid username or password\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Login - Unknown Username",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"does_not_exist_{{$randomInt}}\",\n  \"password\": \"Whatever123!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Body has the same generic message as a wrong password\", function () {",
+									"    pm.expect(pm.response.json().message).to.eql(\"Invalid username or password\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Register - New Staff User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{newStaffUsername}}\",\n  \"password\": \"{{newStaffPassword}}\",\n  \"role\": \"Staff\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// A fresh, collision-free username every run - RegisterRequestValidator only rejects",
+									"// blank/over-50-char usernames, but AuthServiceImpl.register() itself rejects a",
+									"// username that already exists, so a fixed literal would only succeed once.",
+									"const suffix = Date.now().toString().slice(-8);",
+									"pm.environment.set(\"newStaffUsername\", \"staff_\" + suffix);",
+									"pm.environment.set(\"newStaffPassword\", \"NewPass\" + suffix + \"!\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body confirms creation\", function () {",
+									"    pm.expect(pm.response.json().message).to.eql(\"User created successfully\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Register - Duplicate Username",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{adminUsername}}\",\n  \"password\": \"SomeValidPass1\",\n  \"role\": \"Staff\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "\"admin\" already exists (seeded by DataSeeder) - AuthServiceImpl.register() checks this itself, after RegisterRequestValidator's shape checks already passed."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Body explains the username is taken\", function () {",
+									"    pm.expect(pm.response.json().message).to.eql(\"Username already exists\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Register - Invalid Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"role_test_{{$randomInt}}\",\n  \"password\": \"ValidPass123\",\n  \"role\": \"SuperAdmin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "RegisterRequestValidator.validate() rejects this before AuthServiceImpl ever runs - response is the raw errors array, not a {message} object."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the role rule\", function () {",
+									"    const errors = pm.response.json();",
+									"    pm.expect(errors).to.include(\"role must be Admin, Staff, or Student.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Register - Password Too Short",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"pwd_test_{{$randomInt}}\",\n  \"password\": \"Sh0rt!\",\n  \"role\": \"Student\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the password rule\", function () {",
+									"    const errors = pm.response.json();",
+									"    pm.expect(errors).to.include(\"password must be at least 8 characters.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Register - Missing Username",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"\",\n  \"password\": \"ValidPass123\",\n  \"role\": \"Student\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the username rule\", function () {",
+									"    const errors = pm.response.json();",
+									"    pm.expect(errors).to.include(\"username is required.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Register - Username Too Long",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu\",\n  \"password\": \"ValidPass123\",\n  \"role\": \"Student\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the length rule\", function () {",
+									"    const errors = pm.response.json();",
+									"    pm.expect(errors).to.include(\"username must be at most 50 characters.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				}
+			],
+			"description": "Login (all three seeded roles) and Register, happy path plus every validation/business rule in RegisterRequestValidator and AuthServiceImpl."
+		},
+		{
+			"name": "01 - Students",
+			"item": [
+				{
+					"name": "Create Student - as Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"{{$randomFirstName}}\",\n  \"lastName\": \"{{$randomLastName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"dateOfBirth\": \"{{randomDOB}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Main student used by the rest of this folder, and by Courses/Enrollments below - keep this request first if re-running the whole collection top to bottom."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// StudentCreateValidator/StudentUpdateValidator require DD/MM/YYYY, parsed with",
+									"// java.time's STRICT resolver style - NOT the MM/DD/YYYY a US-centric generator",
+									"// would produce. Getting this order backwards is exactly what silently broke the",
+									"// original collection's random DOB whenever the day-of-month rolled above 12.",
+									"function randomDob(startYear, endYear) {",
+									"    const start = new Date(startYear, 0, 1).getTime();",
+									"    const end = new Date(endYear, 11, 31).getTime();",
+									"    const d = new Date(start + Math.random() * (end - start));",
+									"    const dd = String(d.getDate()).padStart(2, '0');",
+									"    const mm = String(d.getMonth() + 1).padStart(2, '0');",
+									"    const yyyy = d.getFullYear();",
+									"    return `${dd}/${mm}/${yyyy}`;",
+									"}",
+									"pm.environment.set(\"randomDOB\", randomDob(1995, 2007));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Student object has the expected fields\", function () {",
+									"    const s = pm.response.json();",
+									"    pm.expect(s).to.have.all.keys(\"id\", \"firstName\", \"lastName\", \"email\", \"dateOfBirth\");",
+									"});",
+									"",
+									"const s = pm.response.json();",
+									"pm.environment.set(\"createdStudentId\", s.id);",
+									"pm.environment.set(\"createdStudentEmail\", s.email);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Student - as Staff",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staffToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"{{$randomFirstName}}\",\n  \"lastName\": \"{{$randomLastName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"dateOfBirth\": \"{{randomDOB}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "StudentController.create() allows ADMIN or STAFF."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// StudentCreateValidator/StudentUpdateValidator require DD/MM/YYYY, parsed with",
+									"// java.time's STRICT resolver style - NOT the MM/DD/YYYY a US-centric generator",
+									"// would produce. Getting this order backwards is exactly what silently broke the",
+									"// original collection's random DOB whenever the day-of-month rolled above 12.",
+									"function randomDob(startYear, endYear) {",
+									"    const start = new Date(startYear, 0, 1).getTime();",
+									"    const end = new Date(endYear, 11, 31).getTime();",
+									"    const d = new Date(start + Math.random() * (end - start));",
+									"    const dd = String(d.getDate()).padStart(2, '0');",
+									"    const mm = String(d.getMonth() + 1).padStart(2, '0');",
+									"    const yyyy = d.getFullYear();",
+									"    return `${dd}/${mm}/${yyyy}`;",
+									"}",
+									"pm.environment.set(\"randomDOB\", randomDob(1995, 2007));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Student object has the expected fields\", function () {",
+									"    const s = pm.response.json();",
+									"    pm.expect(s).to.have.all.keys(\"id\", \"firstName\", \"lastName\", \"email\", \"dateOfBirth\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Student - as Student Role - Forbidden",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{studentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"{{$randomFirstName}}\",\n  \"lastName\": \"{{$randomLastName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"dateOfBirth\": \"{{randomDOB}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "@PreAuthorize(\"hasAnyRole('ADMIN','STAFF')\") - a valid STUDENT token is authenticated but not authorized, so this is 403, not 401."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// StudentCreateValidator/StudentUpdateValidator require DD/MM/YYYY, parsed with",
+									"// java.time's STRICT resolver style - NOT the MM/DD/YYYY a US-centric generator",
+									"// would produce. Getting this order backwards is exactly what silently broke the",
+									"// original collection's random DOB whenever the day-of-month rolled above 12.",
+									"function randomDob(startYear, endYear) {",
+									"    const start = new Date(startYear, 0, 1).getTime();",
+									"    const end = new Date(endYear, 11, 31).getTime();",
+									"    const d = new Date(start + Math.random() * (end - start));",
+									"    const dd = String(d.getDate()).padStart(2, '0');",
+									"    const mm = String(d.getMonth() + 1).padStart(2, '0');",
+									"    const yyyy = d.getFullYear();",
+									"    return `${dd}/${mm}/${yyyy}`;",
+									"}",
+									"pm.environment.set(\"randomDOB\", randomDob(1995, 2007));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Student - No Auth Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"{{$randomFirstName}}\",\n  \"lastName\": \"{{$randomLastName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"dateOfBirth\": \"{{randomDOB}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "No bearer token at all - SecurityConfig's anyRequest().authenticated() rejects this before @PreAuthorize is even reached."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// StudentCreateValidator/StudentUpdateValidator require DD/MM/YYYY, parsed with",
+									"// java.time's STRICT resolver style - NOT the MM/DD/YYYY a US-centric generator",
+									"// would produce. Getting this order backwards is exactly what silently broke the",
+									"// original collection's random DOB whenever the day-of-month rolled above 12.",
+									"function randomDob(startYear, endYear) {",
+									"    const start = new Date(startYear, 0, 1).getTime();",
+									"    const end = new Date(endYear, 11, 31).getTime();",
+									"    const d = new Date(start + Math.random() * (end - start));",
+									"    const dd = String(d.getDate()).padStart(2, '0');",
+									"    const mm = String(d.getMonth() + 1).padStart(2, '0');",
+									"    const yyyy = d.getFullYear();",
+									"    return `${dd}/${mm}/${yyyy}`;",
+									"}",
+									"pm.environment.set(\"randomDOB\", randomDob(1995, 2007));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Student - Missing Required Fields",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"\",\n  \"lastName\": \"\",\n  \"email\": \"\",\n  \"dateOfBirth\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names every missing field\", function () {",
+									"    const errors = pm.response.json();",
+									"    [\"firstName is required.\", \"lastName is required.\", \"email is required.\", \"dateOfBirth is required.\"]",
+									"        .forEach(msg => pm.expect(errors).to.include(msg));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Student - Invalid Email Format",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Jordan\",\n  \"lastName\": \"Lee\",\n  \"email\": \"not-an-email\",\n  \"dateOfBirth\": \"15/06/2001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the email rule\", function () {",
+									"    pm.expect(pm.response.json()).to.include(\"email must be a valid email address.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Student - Invalid DOB Format (wrong shape)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Jordan\",\n  \"lastName\": \"Lee\",\n  \"email\": \"{{$randomEmail}}\",\n  \"dateOfBirth\": \"2001-06-15\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "ISO shape (YYYY-MM-DD) instead of the required DD/MM/YYYY."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the DOB format rule\", function () {",
+									"    pm.expect(pm.response.json()).to.include(\"dateOfBirth must be in DD/MM/YYYY format.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Student - DOB In The Future",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Jordan\",\n  \"lastName\": \"Lee\",\n  \"email\": \"{{$randomEmail}}\",\n  \"dateOfBirth\": \"01/01/2999\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the future-date rule\", function () {",
+									"    pm.expect(pm.response.json()).to.include(\"dateOfBirth cannot be in the future.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Student - Impossible Calendar Date",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Jordan\",\n  \"lastName\": \"Lee\",\n  \"email\": \"{{$randomEmail}}\",\n  \"dateOfBirth\": \"31/04/2005\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "April has 30 days - passes the DD/MM/YYYY shape regex but fails STRICT calendar parsing in StudentCreateValidator."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array flags the date as not real\", function () {",
+									"    const errors = pm.response.json();",
+									"    pm.expect(errors.some(e => e.includes(\"is not a real calendar date\"))).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Student - firstName Too Long",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\n  \"lastName\": \"Lee\",\n  \"email\": \"{{$randomEmail}}\",\n  \"dateOfBirth\": \"15/06/2001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the length rule\", function () {",
+									"    pm.expect(pm.response.json()).to.include(\"firstName must be at most 50 characters.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Get All Students",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"description": "GET is permitAll (SecurityConfig) - no token needed."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Student By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/student/{{createdStudentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{createdStudentId}}"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Student object has the expected fields\", function () {",
+									"    const s = pm.response.json();",
+									"    pm.expect(s).to.have.all.keys(\"id\", \"firstName\", \"lastName\", \"email\", \"dateOfBirth\");",
+									"});",
+									"",
+									"pm.test(\"id matches the requested student\", function () {",
+									"    pm.expect(String(pm.response.json().id)).to.eql(pm.environment.get(\"createdStudentId\").toString());",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Student By Id - Not Found",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/student/999999999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"999999999"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Update Student - as Admin",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student/{{createdStudentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{createdStudentId}}"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"UpdatedFirst\",\n  \"lastName\": \"UpdatedLast\",\n  \"email\": \"{{createdStudentEmail}}\",\n  \"dateOfBirth\": \"20/02/2000\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "StudentController.update() returns 204 No Content (no body) on success."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Update Student - as Staff",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student/{{createdStudentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{createdStudentId}}"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staffToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"UpdatedAgain\",\n  \"lastName\": \"UpdatedLast\",\n  \"email\": \"{{createdStudentEmail}}\",\n  \"dateOfBirth\": \"20/02/2000\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Update Student - Invalid Data",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student/{{createdStudentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{createdStudentId}}"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"\",\n  \"lastName\": \"UpdatedLast\",\n  \"email\": \"{{createdStudentEmail}}\",\n  \"dateOfBirth\": \"20/02/2000\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the firstName rule\", function () {",
+									"    pm.expect(pm.response.json()).to.include(\"firstName is required.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Update Student - Not Found",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student/999999999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"999999999"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Ghost\",\n  \"lastName\": \"Student\",\n  \"email\": \"{{$randomEmail}}\",\n  \"dateOfBirth\": \"20/02/2000\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Student For Deletion - as Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/student",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"{{$randomFirstName}}\",\n  \"lastName\": \"{{$randomLastName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"dateOfBirth\": \"{{randomDOB}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "A disposable student, separate from createdStudentId, so the delete tests below never touch the student the Enrollments folder depends on."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// StudentCreateValidator/StudentUpdateValidator require DD/MM/YYYY, parsed with",
+									"// java.time's STRICT resolver style - NOT the MM/DD/YYYY a US-centric generator",
+									"// would produce. Getting this order backwards is exactly what silently broke the",
+									"// original collection's random DOB whenever the day-of-month rolled above 12.",
+									"function randomDob(startYear, endYear) {",
+									"    const start = new Date(startYear, 0, 1).getTime();",
+									"    const end = new Date(endYear, 11, 31).getTime();",
+									"    const d = new Date(start + Math.random() * (end - start));",
+									"    const dd = String(d.getDate()).padStart(2, '0');",
+									"    const mm = String(d.getMonth() + 1).padStart(2, '0');",
+									"    const yyyy = d.getFullYear();",
+									"    return `${dd}/${mm}/${yyyy}`;",
+									"}",
+									"pm.environment.set(\"randomDOB\", randomDob(1995, 2007));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.environment.set(\"studentIdForDeletion\", pm.response.json().id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Delete Student - as Staff - Forbidden",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/student/{{studentIdForDeletion}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{studentIdForDeletion}}"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staffToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"description": "@PreAuthorize(\"hasRole('ADMIN')\") on delete - STAFF can create/update students but not delete them."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Delete Student - as Admin",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/student/{{studentIdForDeletion}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{studentIdForDeletion}}"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Delete Student - Not Found",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/student/{{studentIdForDeletion}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"{{studentIdForDeletion}}"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"description": "Same id as the request above - it was just deleted, so this now correctly 404s."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				}
+			],
+			"description": "Full CRUD against /api/student. GET is open to everyone; write operations require ADMIN or STAFF (DELETE is ADMIN-only), enforced in StudentController via @PreAuthorize."
+		},
+		{
+			"name": "02 - Courses",
+			"item": [
+				{
+					"name": "Create Course - as Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/course",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"course"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{courseName}}\",\n  \"credits\": \"{{courseCredits}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Main course used by the rest of this folder and by Enrollments below."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const courseNames = [",
+									"  \"Algebra I\", \"Algebra II\", \"Geometry\", \"Calculus\", \"US History\",",
+									"  \"World History\", \"Biology\", \"Chemistry\", \"Physics\", \"English Literature\",",
+									"  \"Creative Writing\", \"Computer Science\", \"Introduction to Programming\",",
+									"  \"Statistics\", \"Economics\", \"Psychology\", \"Art History\", \"Music Theory\",",
+									"  \"Physical Education\", \"Spanish I\"",
+									"];",
+									"const randomName = courseNames[Math.floor(Math.random() * courseNames.length)] + \" \" + Date.now().toString().slice(-4);",
+									"// CourseCreateValidator requires credits between 1 and 6 inclusive.",
+									"const randomCredits = Math.floor(Math.random() * 6) + 1;",
+									"pm.environment.set(\"courseName\", randomName);",
+									"pm.environment.set(\"courseCredits\", randomCredits);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Course object has the expected fields\", function () {",
+									"    const c = pm.response.json();",
+									"    pm.expect(c).to.have.all.keys(\"id\", \"name\", \"credits\");",
+									"});",
+									"",
+									"pm.environment.set(\"createdCourseId\", pm.response.json().id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Course - Secondary (for Enrollment tests)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/course",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"course"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{courseName}}\",\n  \"credits\": \"{{courseCredits}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "A second course so the Enrollments folder can enroll the same student in two different courses (Admin's enrollment and Staff's enrollment) without relying on any duplicate-enrollment rule - EnrollmentServiceImpl.create() has none."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const courseNames = [",
+									"  \"Algebra I\", \"Algebra II\", \"Geometry\", \"Calculus\", \"US History\",",
+									"  \"World History\", \"Biology\", \"Chemistry\", \"Physics\", \"English Literature\",",
+									"  \"Creative Writing\", \"Computer Science\", \"Introduction to Programming\",",
+									"  \"Statistics\", \"Economics\", \"Psychology\", \"Art History\", \"Music Theory\",",
+									"  \"Physical Education\", \"Spanish I\"",
+									"];",
+									"const randomName = courseNames[Math.floor(Math.random() * courseNames.length)] + \" \" + Date.now().toString().slice(-4);",
+									"// CourseCreateValidator requires credits between 1 and 6 inclusive.",
+									"const randomCredits = Math.floor(Math.random() * 6) + 1;",
+									"pm.environment.set(\"courseName\", randomName);",
+									"pm.environment.set(\"courseCredits\", randomCredits);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.environment.set(\"createdCourseId2\", pm.response.json().id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Course - Tertiary (for Deletion tests)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/course",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"course"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{courseName}}\",\n  \"credits\": \"{{courseCredits}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "A disposable course, paired with a disposable enrollment in the Enrollments folder's delete tests."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const courseNames = [",
+									"  \"Algebra I\", \"Algebra II\", \"Geometry\", \"Calculus\", \"US History\",",
+									"  \"World History\", \"Biology\", \"Chemistry\", \"Physics\", \"English Literature\",",
+									"  \"Creative Writing\", \"Computer Science\", \"Introduction to Programming\",",
+									"  \"Statistics\", \"Economics\", \"Psychology\", \"Art History\", \"Music Theory\",",
+									"  \"Physical Education\", \"Spanish I\"",
+									"];",
+									"const randomName = courseNames[Math.floor(Math.random() * courseNames.length)] + \" \" + Date.now().toString().slice(-4);",
+									"// CourseCreateValidator requires credits between 1 and 6 inclusive.",
+									"const randomCredits = Math.floor(Math.random() * 6) + 1;",
+									"pm.environment.set(\"courseName\", randomName);",
+									"pm.environment.set(\"courseCredits\", randomCredits);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.environment.set(\"createdCourseId3\", pm.response.json().id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Course - as Staff - Forbidden",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/course",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"course"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staffToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Should Not Be Created\",\n  \"credits\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "@PreAuthorize(\"hasRole('ADMIN')\") - unlike students, course creation is ADMIN-only, STAFF is not enough."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Course - No Auth Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/course",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"course"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Should Not Be Created\",\n  \"credits\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Course - Missing Name",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/course",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"course"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"\",\n  \"credits\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the name rule\", function () {",
+									"    pm.expect(pm.response.json()).to.include(\"name is required.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Course - Name Too Long",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/course",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"course"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\",\n  \"credits\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the length rule\", function () {",
+									"    pm.expect(pm.response.json()).to.include(\"name must be at most 100 characters.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Course - Credits Below Minimum",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/course",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"course"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{$randomWord}}\",\n  \"credits\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the credits range rule\", function () {",
+									"    pm.expect(pm.response.json()).to.include(\"credits must be between 1 and 6.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Course - Credits Above Maximum",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/course",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"course"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{$randomWord}}\",\n  \"credits\": 7\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the credits range rule\", function () {",
+									"    pm.expect(pm.response.json()).to.include(\"credits must be between 1 and 6.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Course - Missing Credits",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/course",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"course"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{$randomWord}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the required-credits rule\", function () {",
+									"    pm.expect(pm.response.json()).to.include(\"credits is required.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Get All Courses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/course",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"course"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									"",
+									"pm.test(\"Response body is an array of course objects\", function () {",
+									"    const courses = pm.response.json();",
+									"    pm.expect(courses).to.be.an(\"array\");",
+									"    courses.forEach(c => {",
+									"        pm.expect(c).to.have.all.keys(\"id\", \"name\", \"credits\");",
+									"        pm.expect(c.id).to.be.a(\"number\");",
+									"        pm.expect(c.name).to.be.a(\"string\");",
+									"        pm.expect(c.credits).to.be.a(\"number\");",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Course By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/course/{{createdCourseId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"course",
+								"{{createdCourseId}}"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Course object has the expected fields\", function () {",
+									"    const c = pm.response.json();",
+									"    pm.expect(c).to.have.all.keys(\"id\", \"name\", \"credits\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Course By Id - Not Found",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/course/999999999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"course",
+								"999999999"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				}
+			],
+			"description": "Full coverage of /api/course. GET is open to everyone; POST is ADMIN-only. There is no update or delete endpoint for courses in CourseController - none are included here."
+		},
+		{
+			"name": "03 - Enrollments",
+			"item": [
+				{
+					"name": "Enroll Student - as Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"studentId\": \"{{createdStudentId}}\",\n  \"courseId\": \"{{createdCourseId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "EnrollmentCreateDto deliberately excludes grade - a student enrolls first, a grade is assigned later via PUT."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Enrollment object has the expected fields\", function () {",
+									"    const e = pm.response.json();",
+									"    pm.expect(e).to.have.all.keys(",
+									"        \"id\", \"studentId\", \"studentName\", \"courseId\", \"courseName\", \"enrollmentDate\", \"grade\");",
+									"});",
+									"",
+									"pm.test(\"grade starts out ungraded\", function () {",
+									"    pm.expect(pm.response.json().grade).to.be.null;",
+									"});",
+									"",
+									"pm.environment.set(\"createdEnrollmentId\", pm.response.json().id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Enroll Student - as Staff",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staffToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"studentId\": \"{{createdStudentId}}\",\n  \"courseId\": \"{{createdCourseId2}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Same student, a different course (createdCourseId2) - EnrollmentServiceImpl has no duplicate-enrollment guard, so this only proves STAFF can enroll, not anything about re-enrollment rules."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.environment.set(\"createdEnrollmentId2\", pm.response.json().id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Enroll Student - as Student Role - Forbidden",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{studentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"studentId\": \"{{createdStudentId}}\",\n  \"courseId\": \"{{createdCourseId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "@PreAuthorize(\"hasAnyRole('ADMIN','STAFF')\") - a STUDENT can view enrollments (GET is permitAll) but not create one."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Enroll Student - No Auth Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"studentId\": \"{{createdStudentId}}\",\n  \"courseId\": \"{{createdCourseId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Enroll Student - Nonexistent Student Id",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"studentId\": 999999999,\n  \"courseId\": \"{{createdCourseId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Passes EnrollmentCreateValidator (both ids are non-null) - the 400 comes from EnrollmentServiceImpl.create()'s own existence check, so the body shape here is {message}, not a validation errors array."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Body explains the student wasn't found\", function () {",
+									"    pm.expect(pm.response.json().message).to.eql(\"Student not found\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Enroll Student - Nonexistent Course Id",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"studentId\": \"{{createdStudentId}}\",\n  \"courseId\": 999999999\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Body explains the course wasn't found\", function () {",
+									"    pm.expect(pm.response.json().message).to.eql(\"Course not found\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Enroll Student - Missing studentId",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"courseId\": \"{{createdCourseId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Fails EnrollmentCreateValidator before the service layer runs - body is the validation errors array here, not {message}."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the studentId rule\", function () {",
+									"    pm.expect(pm.response.json()).to.include(\"studentId is required.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Enroll Student - Missing courseId",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"studentId\": \"{{createdStudentId}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the courseId rule\", function () {",
+									"    pm.expect(pm.response.json()).to.include(\"courseId is required.\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Get All Enrollments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Enrollment By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment/{{createdEnrollmentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment",
+								"{{createdEnrollmentId}}"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Enrollment object has the expected fields\", function () {",
+									"    const e = pm.response.json();",
+									"    pm.expect(e).to.have.all.keys(",
+									"        \"id\", \"studentId\", \"studentName\", \"courseId\", \"courseName\", \"enrollmentDate\", \"grade\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Enrollment By Id - Not Found",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment/999999999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment",
+								"999999999"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Enrollments By Student Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment/student/{{createdStudentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment",
+								"student",
+								"{{createdStudentId}}"
+							]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array containing this student's enrollments\", function () {",
+									"    const list = pm.response.json();",
+									"    pm.expect(list).to.be.an(\"array\");",
+									"    pm.expect(list.length).to.be.above(0);",
+									"    list.forEach(e => pm.expect(String(e.studentId)).to.eql(pm.environment.get(\"createdStudentId\").toString()));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Update Grade - as Admin",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment/{{createdEnrollmentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment",
+								"{{createdEnrollmentId}}"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"grade\": \"A\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"grade was updated\", function () {",
+									"    pm.expect(pm.response.json().grade).to.eql(\"A\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Update Grade - as Staff",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment/{{createdEnrollmentId2}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment",
+								"{{createdEnrollmentId2}}"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staffToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"grade\": \"B+\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "EnrollmentUpdateValidator's pattern (^[A-Fa-f][+-]?$) allows one letter A-F plus an optional single +/-."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"grade was updated\", function () {",
+									"    pm.expect(pm.response.json().grade).to.eql(\"B+\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Update Grade - as Student Role - Forbidden",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment/{{createdEnrollmentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment",
+								"{{createdEnrollmentId}}"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{studentToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"grade\": \"A\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "A student can view their own grade (GET is permitAll) but not set it themselves."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Update Grade - Invalid Format",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment/{{createdEnrollmentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment",
+								"{{createdEnrollmentId}}"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"grade\": \"Z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "\"Z\" isn't A-F, so it fails the pattern even though it's shaped like a grade."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Errors array names the grade format rule\", function () {",
+									"    const errors = pm.response.json();",
+									"    pm.expect(errors.some(e => e.includes(\"must be a letter grade\"))).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Update Grade - Not Found",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment/999999999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment",
+								"999999999"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"grade\": \"A\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Enrollment For Deletion - as Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"studentId\": \"{{createdStudentId}}\",\n  \"courseId\": \"{{createdCourseId3}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"description": "Disposable enrollment (uses the disposable createdCourseId3) so the delete tests below never touch createdEnrollmentId/createdEnrollmentId2."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.environment.set(\"enrollmentIdForDeletion\", pm.response.json().id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Delete Enrollment - as Staff - Forbidden",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment/{{enrollmentIdForDeletion}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment",
+								"{{enrollmentIdForDeletion}}"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staffToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"description": "@PreAuthorize(\"hasRole('ADMIN')\") on delete - STAFF can create enrollments and grade them, but not delete them."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Delete Enrollment - as Admin",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment/{{enrollmentIdForDeletion}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment",
+								"{{enrollmentIdForDeletion}}"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						}
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				},
+				{
+					"name": "Delete Enrollment - Not Found",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/enrollment/{{enrollmentIdForDeletion}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"enrollment",
+								"{{enrollmentIdForDeletion}}"
+							]
+						},
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"description": "Same id as the request above - already deleted, so this now correctly 404s."
+					},
+					"response": [],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					]
+				}
+			],
+			"description": "Full CRUD against /api/enrollment, plus the /api/enrollment/student/{id} lookup. GET is open to everyone; create/update-grade require ADMIN or STAFF, delete is ADMIN-only."
+		}
+	]
+}
