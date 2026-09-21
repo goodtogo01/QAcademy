@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e4ea39bb-138b-477d-a31a-c69bc7b7acbb",
+		"_postman_id": "f1b8891b-6a01-4ea9-9dc4-0ce10b8bf074",
 		"name": "qAcademy_java",
 		"description": "qAcademy School Management System - full REST API coverage (Auth, Students, Courses, Enrollments) generated from the actual controllers/DTOs/validators in src/main/java/com/qacademy, mirroring the same scenarios the RestAssured suite in src/test covers. Run folder-by-folder top to bottom (Auth first) - later requests chain off variables earlier ones set (tokens, createdStudentId, createdCourseId, createdEnrollmentId, etc.).",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -950,7 +950,7 @@
 								}
 							}
 						},
-						"description": "No bearer token at all - SecurityConfig's anyRequest().authenticated() rejects this before @PreAuthorize is even reached."
+						"description": "No bearer token at all - SecurityConfig's anyRequest().authenticated() rejects this before @PreAuthorize is even reached. CustomAuthenticationEntryPoint supplies the response body message."
 					},
 					"response": [],
 					"event": [
@@ -983,6 +983,10 @@
 								"exec": [
 									"pm.test(\"Status code is 401\", function () {",
 									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Body explains the token is missing\", function () {",
+									"    pm.expect(pm.response.json().message).to.eql(\"Due to Auth token missing, this request is forbidden\");",
 									"});"
 								],
 								"type": "text/javascript",
@@ -2278,7 +2282,8 @@
 									"language": "json"
 								}
 							}
-						}
+						},
+						"description": "CustomAuthenticationEntryPoint (SecurityConfig) supplies the response body message for any request with no valid Authorization header."
 					},
 					"response": [],
 					"event": [
@@ -2288,6 +2293,10 @@
 								"exec": [
 									"pm.test(\"Status code is 401\", function () {",
 									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Body explains the token is missing\", function () {",
+									"    pm.expect(pm.response.json().message).to.eql(\"Due to Auth token missing, this request is forbidden\");",
 									"});"
 								],
 								"type": "text/javascript",
@@ -2954,7 +2963,8 @@
 									"language": "json"
 								}
 							}
-						}
+						},
+						"description": "CustomAuthenticationEntryPoint (SecurityConfig) supplies the response body message for any request with no valid Authorization header."
 					},
 					"response": [],
 					"event": [
@@ -2964,6 +2974,10 @@
 								"exec": [
 									"pm.test(\"Status code is 401\", function () {",
 									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Body explains the token is missing\", function () {",
+									"    pm.expect(pm.response.json().message).to.eql(\"Due to Auth token missing, this request is forbidden\");",
 									"});"
 								],
 								"type": "text/javascript",

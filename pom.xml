@@ -145,7 +145,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<suiteXmlFiles>
-						<suiteXmlFile>src/test/resources/testing/testng-regression.xml</suiteXmlFile>
+						<suiteXmlFile>src/test/resources/testing/testng-api.xml</suiteXmlFile>
 					</suiteXmlFiles>
 				</configuration>
 			</plugin>
