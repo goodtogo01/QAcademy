@@ -74,7 +74,7 @@ public class StudentApiTest extends BaseApiTest {
 		  StudentCreateRequest data = TestDataFactory.validStudent();
 		  Response response = studentApiClient.createStudent(
 	                data.firstName(), data.lastName(), data.email(), data.dateOfBirth(), tokenFor(UserRole.STUDENT));
-		  Assert.assertEquals(response.statusCode(), 403);
+		  Assert.assertEquals(response.statusCode(), 401);
 
 	}
 	@Test

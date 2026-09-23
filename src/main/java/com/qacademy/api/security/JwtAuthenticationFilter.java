@@ -6,6 +6,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +27,8 @@ import java.util.List;
 // twice per request. Instead, SecurityConfig constructs this directly and wires
 // it only into the security filter chain.
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtUtil jwtUtil;
 
@@ -52,7 +56,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception ex) {
                 // Invalid/expired token: leave the SecurityContext empty. Downstream
-                // authorization rules reject the request as unauthenticated.
+                // authorization rules reject the request as unauthenticated - which,
+                // via Spring Security's ExceptionTranslationFilter, means a request
+                // with a BROKEN token and a request with NO token at all are
+                // indistinguishable from here on (both fall through to
+                // CustomAuthenticationEntryPoint), even against a route guarded by
+                // @PreAuthorize rather than a plain authenticated() rule. Logged at
+                // WARN (not swallowed silently) specifically so that case is visible
+                // instead of looking like a role/authorization failure.
+                log.warn("Rejecting request with an invalid/unparseable Bearer token: {}", ex.getMessage());
                 SecurityContextHolder.clearContext();
             }
         }
