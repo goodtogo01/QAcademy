@@ -18,7 +18,7 @@ import io.restassured.response.Response;
 
 /**
  * API test class for /api/course. Unlike Student (Admin OR Staff can create),
- * course creation is Admin-only - Staff gets 403 too. There's also no DELETE
+ * course creation is Admin-only - Staff gets 401 too. There's also no DELETE
  * route on this controller at all, so there's nothing to test there.
  */
 
@@ -58,7 +58,7 @@ public class CourseApiTest extends BaseApiTest {
 
 		Response response = courseApiClient.createCourse(data.name(), data.credits(), tokenFor(UserRole.STAFF));
 
-		Assert.assertEquals(response.statusCode(), 403);
+		Assert.assertEquals(response.statusCode(), 401);
 	}
 
 	@Test

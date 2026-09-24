@@ -60,7 +60,15 @@ public final class ConfigManager {
     /**
      * Whether DriverFactory should launch the browser headless (no visible window).
      *
-     * config.properties "headless" key has three meaningful values:
+     * Resolved in this order:
+     * 1. A "-Dheadless=..." JVM system property, if present - e.g. `mvn test
+     *    -Dheadless=true` from a terminal, an IDE run configuration's VM arguments, or a
+     *    Jenkins build parameter passed through the same way (see the Jenkinsfile's
+     *    HEADLESS parameter). This always wins when set, with no need to edit
+     *    config.properties for a one-off run.
+     * 2. Otherwise, config.properties' "headless" key.
+     *
+     * Either source accepts the same three values:
      * - "true" / "false": explicit override, always wins.
      * - "auto" (the default): headless only when this run looks like a CI build - either
      *   env=CI in config.properties, or one of the environment variables a CI runner sets
@@ -72,7 +80,10 @@ public final class ConfigManager {
      *   window on in the first place.
      */
     public boolean isHeadless() {
-        String value = getProperty("headless", "auto").trim();
+        String systemPropertyOverride = System.getProperty("headless");
+        String value = (systemPropertyOverride != null && !systemPropertyOverride.isBlank())
+                ? systemPropertyOverride.trim()
+                : getProperty("headless", "auto").trim();
         if (!"auto".equalsIgnoreCase(value)) {
             return Boolean.parseBoolean(value);
         }

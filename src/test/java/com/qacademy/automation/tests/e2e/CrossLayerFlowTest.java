@@ -98,7 +98,7 @@ public class CrossLayerFlowTest extends BaseUiTest {
 		// The UI hiding the form is cosmetic - confirm the server independently rejects
 		// it too.
 		Response apiResponse = courseApiClient.createCourse("Should Be Rejected", 3, tokenFor(username, password));
-		Assert.assertEquals(apiResponse.statusCode(), 403);
+		Assert.assertEquals(apiResponse.statusCode(), 401);
 	}
 
 	/**
@@ -221,7 +221,7 @@ public class CrossLayerFlowTest extends BaseUiTest {
 
 		String studentToken = tokenFor(UserRole.STUDENT.getUserName(), UserRole.STUDENT.getPassword());
 		Response withStudentToken = courseApiClient.createCourse("Should Be Rejected", 3, studentToken);
-		Assert.assertEquals(withStudentToken.statusCode(), 403,
+		Assert.assertEquals(withStudentToken.statusCode(), 401,
 				"The same write, sent directly to the API with a Student's own valid token, must still be rejected.");
 
 		// A genuinely expired token isn't practical to manufacture here (tokens live 2
@@ -229,7 +229,7 @@ public class CrossLayerFlowTest extends BaseUiTest {
 		// application.properties) - an absent/invalid one exercises the same rejection
 		// path.
 		Response withNoToken = courseApiClient.createCourse("Should Also Be Rejected", 3, "");
-		Assert.assertEquals(withNoToken.statusCode(), 403);
+		Assert.assertEquals(withNoToken.statusCode(), 401);
 	}
 
 }

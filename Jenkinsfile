@@ -20,9 +20,11 @@
 //
 // Headless Chrome: DriverFactory/ConfigManager already auto-detect Jenkins via the
 // JENKINS_URL environment variable that Jenkins itself sets on every build, and switch
-// Selenium to --headless=new automatically - no extra config needed here for that part.
-// The Jenkins agent still needs a real Chrome browser installed (Selenium Manager
-// handles the matching chromedriver automatically as of Selenium 4.6+).
+// Selenium to --headless=new automatically - the HEADLESS parameter below only needs to
+// be touched if you want to override that default for a specific build (e.g. force
+// "false" on a self-hosted agent with a real display, to watch a UI run live). The
+// Jenkins agent still needs a real Chrome browser installed (Selenium Manager handles
+// the matching chromedriver automatically as of Selenium 4.6+).
 
 pipeline {
     agent any
@@ -37,6 +39,11 @@ pipeline {
             name: 'TEST_SUITE',
             choices: ['regression', 'smoke', 'api', 'ui', 'e2e'],
             description: 'Which TestNG suite to run. "regression" = ui+api+e2e (full run).'
+        )
+        choice(
+            name: 'HEADLESS',
+            choices: ['auto', 'true', 'false'],
+            description: 'Chrome window mode for UI tests. "auto" (default) already goes headless on this build agent via ConfigManager\'s own JENKINS_URL detection - override to "true"/"false" only to force one way regardless of environment (e.g. "false" on an agent with a real display, to watch a UI run live).'
         )
     }
 
@@ -106,7 +113,11 @@ pipeline {
                 // BackendLifecycleManager starts the app for this suite and tears it
                 // down again when the suite finishes - see its Javadoc for why. This one
                 // Maven call is the entire "deploy + test" step for CI purposes.
-                sh "mvn -B -ntp test -DsuiteXmlFile=${SUITE_FILE}"
+                //
+                // -Dheadless=${params.HEADLESS} is passed through explicitly (rather than
+                // left to ConfigManager's own JENKINS_URL auto-detection) so the HEADLESS
+                // build parameter above can actually override it per build.
+                sh "mvn -B -ntp test -DsuiteXmlFile=${SUITE_FILE} -Dheadless=${params.HEADLESS}"
             }
         }
     }

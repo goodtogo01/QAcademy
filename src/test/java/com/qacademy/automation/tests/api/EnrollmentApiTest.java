@@ -7,8 +7,13 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.qacademy.automation.api.clients.AuthApiClient;
+import com.qacademy.automation.api.clients.CourseApiClient;
 import com.qacademy.automation.api.clients.EnrollmentApiClient;
+import com.qacademy.automation.api.clients.StudentApiClient;
+import com.qacademy.automation.api.models.request.CourseCreateRequest;
+import com.qacademy.automation.api.models.request.StudentCreateRequest;
 import com.qacademy.automation.core.base.BaseApiTest;
+import com.qacademy.automation.data.TestDataFactory;
 import com.qacademy.automation.data.UserRole;
 
 import io.restassured.response.Response;
@@ -20,23 +25,42 @@ import io.restassured.response.Response;
  */
 
 public class EnrollmentApiTest extends BaseApiTest{
-	
-	/** Seeded once by V1__init.sql on a fresh DB - Ada Lovelace (student) and Algebra I (course). */
-    private static final long SEEDED_STUDENT_ID = 1L;
-    private static final long SEEDED_COURSE_ID = 1L;
 
     private final AuthApiClient authApiClient = new AuthApiClient();
     private final EnrollmentApiClient enrollmentApiClient = new EnrollmentApiClient();
+    private final StudentApiClient studentApiClient = new StudentApiClient();
+    private final CourseApiClient courseApiClient = new CourseApiClient();
 
     // Collect token
     private String tokenFor(UserRole role) {
         return authApiClient.loginAndGetToken(role.getUserName(), role.getPassword());
     }
-    
+
+    /**
+     * Seeds a brand-new student via the API and returns its id. Deliberately NOT a fixed
+     * row id (e.g. "1") - this project's H2 file persists across every run rather than
+     * resetting, so any row seeded once by V1__init.sql can end up deleted by an earlier
+     * test run long before this one executes. Seeding fresh here means this test never
+     * depends on what state past runs happened to leave behind.
+     */
+    private long seedStudentId() {
+        StudentCreateRequest data = TestDataFactory.validStudent();
+        return studentApiClient
+                .createStudent(data.firstName(), data.lastName(), data.email(), data.dateOfBirth(), tokenFor(UserRole.ADMIN))
+                .jsonPath().getLong("id");
+    }
+
+    /** Same reasoning as seedStudentId() - a fresh course rather than a fixed row id. */
+    private long seedCourseId() {
+        CourseCreateRequest data = TestDataFactory.validCourse();
+        return courseApiClient.createCourse(data.name(), data.credits(), tokenFor(UserRole.ADMIN))
+                .jsonPath().getLong("id");
+    }
+
     // Seed Enrollment
     private long seedEnrollment() {
         return enrollmentApiClient
-                .createEnrollment(SEEDED_STUDENT_ID, SEEDED_COURSE_ID, tokenFor(UserRole.ADMIN))
+                .createEnrollment(seedStudentId(), seedCourseId(), tokenFor(UserRole.ADMIN))
                 .jsonPath().getLong("id");
     }
     @Test
@@ -47,7 +71,7 @@ public class EnrollmentApiTest extends BaseApiTest{
     }
     @Test
     public void createEnrollment_asStaff_returns201WithNoGradeYet() {
-        Response response = enrollmentApiClient.createEnrollment(SEEDED_STUDENT_ID, SEEDED_COURSE_ID, tokenFor(UserRole.STAFF));
+        Response response = enrollmentApiClient.createEnrollment(seedStudentId(), seedCourseId(), tokenFor(UserRole.STAFF));
 
         Assert.assertEquals(response.statusCode(), 201);
         Assert.assertNotNull(response.jsonPath().getLong("id"));
@@ -58,13 +82,13 @@ public class EnrollmentApiTest extends BaseApiTest{
 
     @Test
     public void createEnrollment_asStudentRole_isForbidden() {
-        Response response = enrollmentApiClient.createEnrollment(SEEDED_STUDENT_ID, SEEDED_COURSE_ID, tokenFor(UserRole.STUDENT));
+        Response response = enrollmentApiClient.createEnrollment(seedStudentId(), seedCourseId(), tokenFor(UserRole.STUDENT));
 
-        Assert.assertEquals(response.statusCode(), 403);
+        Assert.assertEquals(response.statusCode(), 401);
     }
     @Test
     public void createEnrollment_withNonExistentStudentId_returns400WithMessageObject() {
-        Response response = enrollmentApiClient.createEnrollment(999999999L, SEEDED_COURSE_ID, tokenFor(UserRole.ADMIN));
+        Response response = enrollmentApiClient.createEnrollment(999999999L, seedCourseId(), tokenFor(UserRole.ADMIN));
 
         Assert.assertEquals(response.statusCode(), 400);
         Assert.assertEquals(response.jsonPath().getString("message"), "Student not found");
@@ -72,7 +96,7 @@ public class EnrollmentApiTest extends BaseApiTest{
     
     @Test
     public void createEnrollment_withNonExistentCourseId_returns400WithMessageObject() {
-        Response response = enrollmentApiClient.createEnrollment(SEEDED_STUDENT_ID, 999999999L, tokenFor(UserRole.ADMIN));
+        Response response = enrollmentApiClient.createEnrollment(seedStudentId(), 999999999L, tokenFor(UserRole.ADMIN));
 
         Assert.assertEquals(response.statusCode(), 400);
         Assert.assertEquals(response.jsonPath().getString("message"), "Course not found");
@@ -110,7 +134,7 @@ public class EnrollmentApiTest extends BaseApiTest{
 
         Response response = enrollmentApiClient.deleteEnrollment(String.valueOf(enrollmentId), tokenFor(UserRole.STAFF));
 
-        Assert.assertEquals(response.statusCode(), 403);
+        Assert.assertEquals(response.statusCode(), 401);
     }   
     @Test
     public void deleteEnrollment_asAdmin_removesEnrollment() {

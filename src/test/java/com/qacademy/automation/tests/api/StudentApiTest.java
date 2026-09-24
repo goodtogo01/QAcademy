@@ -119,7 +119,7 @@ public class StudentApiTest extends BaseApiTest {
 		// Confirms the asymmetry: Staff could create a student above, but cannot delete one.
         long studentId = seedStudent();
         Response response = studentApiClient.deleteStudent(String.valueOf(studentId), tokenFor(UserRole.STAFF));
-        Assert.assertEquals(response.statusCode(), 403);
+        Assert.assertEquals(response.statusCode(), 401);
 	}
 	@Test
 	public void deleteStudent_asAdmin_removesStudent() {

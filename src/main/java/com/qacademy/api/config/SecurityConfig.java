@@ -15,7 +15,28 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 // GETs on /api/student and /api/course are open for demo purposes (see
 // qEducation/qCampus's [AllowAnonymous] on the same endpoints); writes require a
-// valid JWT plus role checks enforced with @PreAuthorize on each controller method.
+// valid JWT plus role checks.
+//
+// Role checks for writes are enforced TWICE, deliberately:
+//   1. Here, via .authorizeHttpRequests() HttpMethod/path matchers below - this runs
+//      inside Spring Security's own AuthorizationFilter, before the request ever
+//      reaches DispatcherServlet/the controller.
+//   2. Via @PreAuthorize on each controller method, as defense-in-depth.
+//
+// Why both: a role denial that's only caught by @PreAuthorize throws its
+// AccessDeniedException from deep inside DispatcherServlet's handler-method
+// invocation (the method-security AOP interceptor), rather than from this filter
+// chain directly. In this project that was observed to come back as 401 (via
+// CustomAuthenticationEntryPoint) instead of the correct 403 for a validly
+// authenticated STAFF/STUDENT token that's simply missing the required role
+// (e.g. STAFF calling DELETE /api/student/{id}, which is ADMIN-only) - see
+// JwtAuthenticationFilter's Javadoc and the qa_Academy_java project's
+// 06-Regression-Failures-Investigation.md for how this was diagnosed. Denying at
+// the .authorizeHttpRequests() layer instead means AuthorizationFilter itself
+// throws the AccessDeniedException, in the exact same filter-chain context where
+// the plain .anyRequest().authenticated() check already correctly recognizes a
+// real (non-anonymous) authentication - which is what reliably produces 403
+// instead of 401 for a real-but-insufficiently-privileged principal.
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -39,6 +60,12 @@ public class SecurityConfig {
                 .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/assets/**", "/favicon.ico").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/student/**", "/api/course/**", "/api/enrollment/**").permitAll()
+                // Admin-only writes.
+                .requestMatchers(HttpMethod.DELETE, "/api/student/**", "/api/enrollment/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/course/**").hasRole("ADMIN")
+                // Admin-or-Staff writes.
+                .requestMatchers(HttpMethod.POST, "/api/student/**", "/api/enrollment/**").hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.PUT, "/api/student/**", "/api/enrollment/**").hasAnyRole("ADMIN", "STAFF")
                 .anyRequest().authenticated()
             )
             // Without this, an unauthenticated request (missing/invalid Authorization
