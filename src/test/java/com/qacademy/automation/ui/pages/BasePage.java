@@ -37,6 +37,20 @@ public abstract class BasePage {
 	protected void click(By locator) {
 		waitForClickable(locator).click();
 	}
+
+	/**
+	 * Waits until app.js's loading skeleton (class "skeleton-row", rendered by its
+	 * loadingTable() helper) is gone from the given table container. The skeleton
+	 * renders real <tr> elements inside the SAME container id that the real data
+	 * later replaces (e.g. #students-table), so a getRowCount() called before the
+	 * initial GET resolves silently counts placeholder rows instead of real ones -
+	 * that race is what caused StudentsPageTest/CoursesPageTest row-count
+	 * assertions to fail intermittently in CI. Every page object's getRowCount()
+	 * calls this first so it's race-free regardless of when it's invoked.
+	 */
+	protected void waitForTableLoaded(String containerId) {
+		wait.until(driver -> driver.findElements(By.cssSelector("#" + containerId + " tr.skeleton-row")).isEmpty());
+	}
 	
 	protected void type(By locator, String text) {
 		WebElement element = waitForVisible(locator);

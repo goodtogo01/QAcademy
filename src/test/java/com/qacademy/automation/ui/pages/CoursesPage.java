@@ -28,7 +28,8 @@ public class CoursesPage extends BasePage {
     }
     
     public int getRowCount() {
-    	return driver.findElements(By.cssSelector("#courses-table tbody tr")).size();
+    	waitForTableLoaded("courses-table");
+    	return driver.findElements(By.cssSelector("#courses-table tbody tr:not(.skeleton-row)")).size();
     }
 
     public NavBarComponent navBar() {

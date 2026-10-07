@@ -68,7 +68,8 @@ public class EnrollmentsPage extends BasePage {
 	}
 
 	public int getRowCount() {
-		return driver.findElements(By.cssSelector("#enrollments-table tbody tr")).size();
+		waitForTableLoaded("enrollments-table");
+		return driver.findElements(By.cssSelector("#enrollments-table tbody tr:not(.skeleton-row)")).size();
 	}
 
 	public NavBarComponent navBar() {

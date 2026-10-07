@@ -1,5 +1,6 @@
 package com.qacademy.api.config;
 
+import com.qacademy.api.security.CustomAccessDeniedHandler;
 import com.qacademy.api.security.CustomAuthenticationEntryPoint;
 import com.qacademy.api.security.JwtAuthenticationFilter;
 import com.qacademy.infrastructure.security.JwtUtil;
@@ -43,10 +44,13 @@ public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
-    public SecurityConfig(JwtUtil jwtUtil, CustomAuthenticationEntryPoint authenticationEntryPoint) {
+    public SecurityConfig(JwtUtil jwtUtil, CustomAuthenticationEntryPoint authenticationEntryPoint,
+                           CustomAccessDeniedHandler accessDeniedHandler) {
         this.jwtUtil = jwtUtil;
         this.authenticationEntryPoint = authenticationEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
@@ -71,7 +75,9 @@ public class SecurityConfig {
             // Without this, an unauthenticated request (missing/invalid Authorization
             // header) gets Spring Security's default bare 401 with no body - see
             // CustomAuthenticationEntryPoint for the response body this adds.
-            .exceptionHandling(handling -> handling.authenticationEntryPoint(authenticationEntryPoint))
+            .exceptionHandling(handling -> handling
+                    .authenticationEntryPoint(authenticationEntryPoint)
+                    .accessDeniedHandler(accessDeniedHandler))
             // H2 console renders inside a frame; Spring Security's default
             // X-Frame-Options: DENY blocks it from rendering in the browser.
             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))

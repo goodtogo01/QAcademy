@@ -58,7 +58,7 @@ public class CourseApiTest extends BaseApiTest {
 
 		Response response = courseApiClient.createCourse(data.name(), data.credits(), tokenFor(UserRole.STAFF));
 
-		Assert.assertEquals(response.statusCode(), 401);
+		Assert.assertEquals(response.statusCode(), 403);
 	}
 
 	@Test

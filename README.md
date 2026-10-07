@@ -355,5 +355,4 @@ Test Automation Engineer · Azure Developer & ISTQB Advanced Test Automation Eng
 - LinkedIn: `https://www.linkedin.com/in/khosruz-zaman-9b126311a/`
 - GitHub: `https://github.com/goodtogo01`
 
-*Built with architectural guidance and pair-programming from Claude (Anthropic) — including the original API design
-and this dashboard.*
+*Designed and developed primarily by the author, with selective AI-assisted support for productivity and refinement.*

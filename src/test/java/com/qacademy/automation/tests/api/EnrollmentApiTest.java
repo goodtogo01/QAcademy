@@ -84,7 +84,7 @@ public class EnrollmentApiTest extends BaseApiTest{
     public void createEnrollment_asStudentRole_isForbidden() {
         Response response = enrollmentApiClient.createEnrollment(seedStudentId(), seedCourseId(), tokenFor(UserRole.STUDENT));
 
-        Assert.assertEquals(response.statusCode(), 401);
+        Assert.assertEquals(response.statusCode(), 403);
     }
     @Test
     public void createEnrollment_withNonExistentStudentId_returns400WithMessageObject() {
@@ -134,7 +134,7 @@ public class EnrollmentApiTest extends BaseApiTest{
 
         Response response = enrollmentApiClient.deleteEnrollment(String.valueOf(enrollmentId), tokenFor(UserRole.STAFF));
 
-        Assert.assertEquals(response.statusCode(), 401);
+        Assert.assertEquals(response.statusCode(), 403);
     }   
     @Test
     public void deleteEnrollment_asAdmin_removesEnrollment() {

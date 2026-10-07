@@ -44,7 +44,8 @@ public class StudentsPage extends BasePage {
 	}
 	
 	public int getRowCount() {
-		return driver.findElements(By.cssSelector("#students-table tbody tr")).size();
+		waitForTableLoaded("students-table");
+		return driver.findElements(By.cssSelector("#students-table tbody tr:not(.skeleton-row)")).size();
 	}
 
 	public NavBarComponent navBar() {

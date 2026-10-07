@@ -98,7 +98,7 @@ public class CrossLayerFlowTest extends BaseUiTest {
 		// The UI hiding the form is cosmetic - confirm the server independently rejects
 		// it too.
 		Response apiResponse = courseApiClient.createCourse("Should Be Rejected", 3, tokenFor(username, password));
-		Assert.assertEquals(apiResponse.statusCode(), 401);
+		Assert.assertEquals(apiResponse.statusCode(), 403);
 	}
 
 	/**
@@ -229,7 +229,7 @@ public class CrossLayerFlowTest extends BaseUiTest {
 		// application.properties) - an absent/invalid one exercises the same rejection
 		// path.
 		Response withNoToken = courseApiClient.createCourse("Should Also Be Rejected", 3, "");
-		Assert.assertEquals(withNoToken.statusCode(), 401);
+		Assert.assertEquals(withNoToken.statusCode(), 403);
 	}
 
 }
