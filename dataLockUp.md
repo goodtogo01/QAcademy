@@ -6,8 +6,15 @@ to open a way to browse it: the H2 web console.
 
 ## Steps (while the app is running)
 
-The app must be running first — via `mvn spring-boot:run` or Eclipse's
-**Run As → Java Application** on `QAcademyApplication`.
+The H2 console is off by default (it's a full, unauthenticated SQL console, so it
+doesn't ship enabled) — start the app with the `dev` profile active to turn it on:
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+(Eclipse: Run Configuration → Arguments tab → VM arguments → add
+`-Dspring.profiles.active=dev`.) Then:
 
 1. Open a browser to `http://localhost:8085/h2-console`
 2. On the login page, fill in exactly:

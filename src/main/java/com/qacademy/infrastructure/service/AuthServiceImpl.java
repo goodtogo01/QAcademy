@@ -56,7 +56,15 @@ public class AuthServiceImpl implements AuthService {
         try {
             role = UserRole.valueOf(request.role().toUpperCase());
         } catch (IllegalArgumentException ex) {
-            return new AuthResult(false, "Role must be Admin, Staff, or Student");
+            return new AuthResult(false, "Role must be Staff or Student");
+        }
+        // Defense-in-depth: RegisterRequestValidator already rejects "Admin" before this
+        // point is reached, but this endpoint is unauthenticated (permitAll), so the
+        // service layer refuses to create an Admin account here too rather than relying
+        // on the validator alone to be the only thing standing between anonymous callers
+        // and a privilege escalation.
+        if (role == UserRole.ADMIN) {
+            return new AuthResult(false, "Role must be Staff or Student");
         }
 
         User user = new User();

@@ -24,7 +24,7 @@ public class RegisterPage extends BasePage {
 	}
 
 	/**
-	 * role must match a <option value="..."> exactly: "Admin", "Staff", or
+	 * role must match a <option value="..."> exactly: "Staff" or
 	 * "Student".
 	 */
 	public void register(String username, String password, String role) {

@@ -28,7 +28,7 @@ practice — and demonstrate — the same architecture and decisions across diff
 **Why it might be worth a look:**
 - A complete, working example of **layered architecture** (no framework magic hiding the wiring)
 - **JWT auth from scratch** (no Spring Security OAuth starter, no Auth0) with role-based `@PreAuthorize` checks
-- A **file-based H2 database** with Flyway migrations — zero setup, inspect it directly via the built-in H2 console
+- A **file-based H2 database** with Flyway migrations — zero setup, inspect it directly via the built-in H2 console (run with `-Dspring-boot.run.profiles=dev` to enable it; off by default since it's an unauthenticated SQL console)
 - A **from-scratch vanilla JS dashboard** — no React, no build step, no `node_modules` — that talks to the API and
   reflects every write immediately in the database
 - Documented engineering *decisions*, not just code — see [Design Decisions](#design-decisions--why-things-are-built-this-way) below
@@ -205,7 +205,7 @@ you save is committed immediately.
 ### 6. Look under the hood
 
 - **Swagger UI** (interactive API docs): `http://localhost:8085/swagger`
-- **H2 Console** (browse the raw database): `http://localhost:8085/h2-console`
+- **H2 Console** (browse the raw database): `http://localhost:8085/h2-console` — requires the `dev` profile (`-Dspring-boot.run.profiles=dev`); off by default
   — JDBC URL `jdbc:h2:file:./data/qacademy`, user `sa`, password blank. There's also an "H2 Console" shortcut button
   in the dashboard's top bar.
 - **Example API requests**: see [`docs/api-requests.http`](docs/api-requests.http) — runnable directly from VS

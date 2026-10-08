@@ -64,7 +64,23 @@ public class AuthApiTest extends BaseApiTest {
 		
 		Assert.assertEquals(response.statusCode(), 400);
 		Assert.assertEquals(Arrays.asList(response.as(String[].class)), 
-				List.of("role must be Admin, Staff, or Student."));
+				List.of("role must be Staff or Student."));
+	}
+
+	/**
+	 * Security regression test: /api/auth/register is a permitAll endpoint (no token
+	 * needed), so "Admin" must NOT be an acceptable role here - otherwise any anonymous
+	 * caller could grant themselves a full admin account. The one admin account this app
+	 * ships with is created by DataSeeder at startup; self-registration only ever
+	 * produces Staff or Student. Pins the fix in RegisterRequestValidator/AuthServiceImpl.
+	 */
+	@Test
+	public void register_withAdminRole_isRejected_cannotSelfProvisionAdmin() {
+		Response response = authApiClient.register(uniqueUsername(), "Password1!", "Admin");
+
+		Assert.assertEquals(response.statusCode(), 400);
+		Assert.assertEquals(Arrays.asList(response.as(String[].class)),
+				List.of("role must be Staff or Student."));
 	}
 	
 	@Test
